@@ -5,18 +5,22 @@ const createIssue = async (req, res) => {
     try {
         const { title, description, priority, project } = req.body;
 
+        // 1. Sirf Title aur Description check karo
         if (!title || !description) {
             return res.status(400).json({ message: "Title and Description are required" });
         }
 
+        // --- PROJECT CHECK HATA DIYA HAI ---
+        // Ab agar project ID nahi bhi aayegi, toh task ban jayega
+
         const issue = await Issue.create({
             title,
             description,
-            // Priority ko CAPS mein rakha hai validation ke liye
-            priority: priority ? priority.toUpperCase() : "MEDIUM",
-            status: "TODO", 
+            // Model ke hisaab se lowercase mein save karte hain
+            priority: priority ? priority.toLowerCase() : "medium",
+            status: "todo", 
             creator: req.user._id, 
-            project: project 
+            project: project || null // Agar project nahi hai toh null chala jayega
         });
 
         const createdIssue = await Issue.findById(issue._id).populate("creator", "username fullName email");
@@ -27,7 +31,7 @@ const createIssue = async (req, res) => {
             message: "Issue created successfully! 🚀"
         });
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(400).json({ success: false, message: error.message });
     }
 };
 
@@ -49,30 +53,27 @@ const getAllIssues = async (req, res) => {
 };
 
 // --- UPDATE ISSUE (PATCH) ---
-// Note: Iska naam 'updateIssueStatus' hi rakha hai kyunki tere routes mein yahi use ho raha hai
 const updateIssueStatus = async (req, res) => {
     try {
         const { issueId } = req.params;
         const { title, description, priority, status } = req.body; 
 
-        // 1. Check karo issue exist karta hai ya nahi
         const issue = await Issue.findById(issueId);
         if (!issue) {
             return res.status(404).json({ message: "Issue not found" });
         }
 
-        // 2. Update logic: Agar body mein data hai toh wo lo, warna purana rehne do
         const updatedIssue = await Issue.findByIdAndUpdate(
             issueId,
             {
                 $set: {
                     title: title || issue.title,
                     description: description || issue.description,
-                    priority: priority ? priority.toUpperCase() : issue.priority,
-                    status: status ? status.toUpperCase() : issue.status,
+                    priority: priority ? priority.toLowerCase() : issue.priority,
+                    status: status ? status.toLowerCase() : issue.status,
                 }
             },
-            { new: true }
+            { new: true, runValidators: true } 
         ).populate("creator", "username fullName");
 
         return res.status(200).json({
@@ -81,7 +82,7 @@ const updateIssueStatus = async (req, res) => {
             message: "Issue updated successfully! 🚀"
         });
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(400).json({ success: false, message: error.message });
     }
 };
 
