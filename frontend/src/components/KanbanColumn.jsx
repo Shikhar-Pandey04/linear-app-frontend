@@ -10,16 +10,15 @@ import SortableIssueCard from './SortableIssueCard';
 const KanbanColumn = ({ id, title, issues, onEdit, onDelete }) => {
   const { setNodeRef, isOver } = useDroppable({ id: id });
 
-  // --- Status Wise Config (Colors & Icons) ---
   const getStatusConfig = () => {
     switch (title.toUpperCase()) {
       case 'DONE':
         return {
           accentColor: 'bg-emerald-500',
           borderColor: 'border-emerald-500/20',
-          glowColor: 'shadow-emerald-500/10',
+          glow: 'shadow-[0_-4px_15px_-3px_rgba(16,185,129,0.1)]',
           icon: <CheckCircle2 size={14} className="text-emerald-500" />,
-          emptyIcon: <CheckCircle2 size={32} className="text-emerald-500/20 mb-3" />,
+          emptyIcon: <CheckCircle2 size={32} className="text-emerald-500/10 mb-3" />,
           emptyText: "No tasks completed yet",
           subText: "Great! Keep up the good work"
         };
@@ -27,19 +26,19 @@ const KanbanColumn = ({ id, title, issues, onEdit, onDelete }) => {
         return {
           accentColor: 'bg-amber-500',
           borderColor: 'border-amber-500/20',
-          glowColor: 'shadow-amber-500/10',
+          glow: 'shadow-[0_-4px_15px_-3px_rgba(245,158,11,0.1)]',
           icon: <Clock size={14} className="text-amber-500" />,
-          emptyIcon: <Clock size={32} className="text-amber-500/20 mb-3" />,
+          emptyIcon: <Clock size={32} className="text-amber-500/10 mb-3" />,
           emptyText: "No tasks in progress",
           subText: "Drag tasks here to update status"
         };
       default: // TODO
         return {
           accentColor: 'bg-indigo-600',
-          borderColor: 'border-indigo-600/20',
-          glowColor: 'shadow-indigo-600/10',
+          borderColor: 'border-indigo-500/10',
+          glow: 'shadow-[0_-4px_15px_-3px_rgba(79,70,229,0.1)]',
           icon: <Circle size={14} className="text-indigo-500" />,
-          emptyIcon: <Circle size={32} className="text-slate-800 mb-3" />,
+          emptyIcon: <Circle size={32} className="text-slate-800/40 mb-3" />,
           emptyText: "No tasks to do",
           subText: "Ready to start something new?"
         };
@@ -51,15 +50,15 @@ const KanbanColumn = ({ id, title, issues, onEdit, onDelete }) => {
   return (
     <div 
       ref={setNodeRef} 
-      className={`relative flex flex-col min-h-[750px] rounded-2xl bg-[#0b0e11]/50 border ${config.borderColor} transition-all duration-300 ${
-        isOver ? 'bg-indigo-500/5 ring-1 ring-indigo-500/20' : ''
-      } ${config.glowColor} shadow-2xl`}
+      className={`relative flex flex-col min-h-[750px] rounded-2xl bg-[#0b0e11]/60 border border-slate-800/40 transition-all duration-300 overflow-hidden ${
+        isOver ? 'bg-indigo-500/5 ring-1 ring-indigo-500/20 scale-[1.01]' : ''
+      } ${config.glow}`}
     >
-      {/* --- Top Accent Line (Ye wahi hai jo tumne manga tha) --- */}
-      <div className={`absolute top-0 left-0 right-0 h-[3px] ${config.accentColor} rounded-t-2xl opacity-80`} />
+      {/* --- CURVED Top Accent Line (Integrated with Rounded Corners) --- */}
+      <div className={`absolute top-0 left-0 right-0 h-[4px] ${config.accentColor} rounded-t-2xl z-10`} />
 
       {/* --- Column Header --- */}
-      <div className="flex items-center justify-between p-5 mb-2">
+      <div className="flex items-center justify-between p-5 mb-2 mt-1">
         <div className="flex items-center gap-3">
           {config.icon}
           <h3 className="text-[12px] font-bold text-slate-200 uppercase tracking-widest">
@@ -72,27 +71,21 @@ const KanbanColumn = ({ id, title, issues, onEdit, onDelete }) => {
       </div>
 
       {/* --- Sortable Context --- */}
-      <SortableContext 
-        items={issues.map(i => i._id)} 
-        strategy={verticalListSortingStrategy}
-      >
-        <div className="flex-1 flex flex-col px-3 pb-4">
+      <SortableContext items={issues.map(i => i._id)} strategy={verticalListSortingStrategy}>
+        <div className="flex-1 flex flex-col px-3 pb-6">
           {issues.length > 0 ? (
             <div className="space-y-3">
               {issues.map((issue) => (
-                <SortableIssueCard 
-                  key={issue._id} 
-                  issue={issue} 
-                  onEdit={onEdit} 
-                  onDelete={onDelete} 
-                />
+                <SortableIssueCard key={issue._id} issue={issue} onEdit={onEdit} onDelete={onDelete} />
               ))}
             </div>
           ) : (
-            /* --- Empty State (Centered as per Image) --- */
-            <div className="flex-1 flex flex-col items-center justify-center border border-dashed border-slate-800/40 rounded-xl m-1 bg-[#161b22]/10">
-               {config.emptyIcon}
-               <p className="text-xs font-bold text-slate-400 mb-1 tracking-tight">
+            /* --- Empty State --- */
+            <div className="flex-1 flex flex-col items-center justify-center border border-dashed border-slate-800/30 rounded-xl m-1 bg-[#161b22]/10 transition-opacity duration-500">
+               <div className="p-4 bg-slate-900/40 rounded-full mb-2">
+                 {config.emptyIcon}
+               </div>
+               <p className="text-[12px] font-bold text-slate-400 mb-1 tracking-tight">
                  {config.emptyText}
                </p>
                <p className="text-[10px] text-slate-600 font-medium">
@@ -101,13 +94,13 @@ const KanbanColumn = ({ id, title, issues, onEdit, onDelete }) => {
             </div>
           )}
 
-          {/* --- Add Another Task Button (Bottom style) --- */}
+          {/* --- Bottom Add Task Button --- */}
           <button 
             onClick={() => onEdit?.(null)}
-            className="mt-4 w-full py-4 rounded-xl border border-dashed border-slate-800/50 hover:border-slate-700 hover:bg-[#161b22]/30 text-slate-500 hover:text-slate-300 transition-all flex items-center justify-center gap-2 group/btn"
+            className="mt-6 w-full py-4 rounded-xl border border-dashed border-slate-800/50 hover:border-slate-700 hover:bg-[#161b22]/40 text-slate-500 hover:text-slate-300 transition-all flex items-center justify-center gap-2 group/btn"
           >
-            <Calendar size={14} className="group-hover/btn:text-indigo-500 transition-colors" />
-            <span className="text-[11px] font-bold">+ Add another task</span>
+            <Plus size={14} className="group-hover/btn:text-indigo-500 transition-colors" />
+            <span className="text-[11px] font-bold tracking-tight">Add another task</span>
           </button>
         </div>
       </SortableContext>
