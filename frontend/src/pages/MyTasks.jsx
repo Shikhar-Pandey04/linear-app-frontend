@@ -7,16 +7,16 @@ import axios from '../api/axios';
 const MyTasks = () => {
   const [issues, setIssues] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingIssue, setEditingIssue] = useState(null); // 👈 Edit ke liye naya state
+  const [editingIssue, setEditingIssue] = useState(null); 
   const [loading, setLoading] = useState(true);
 
-  // Database se issues fetch karne ka function
+  // --- 1. Fetch Issues ---
   const fetchIssues = async () => {
     try {
       const res = await axios.get('/issues/get-issues');
       setIssues(res.data.data || []);
     } catch (err) {
-      console.error("Issues fetch fail ho gaya bhai:", err);
+      console.error("Issues fetch error:", err);
     } finally {
       setLoading(false);
     }
@@ -26,14 +26,15 @@ const MyTasks = () => {
     fetchIssues();
   }, []);
 
-  // --- EDIT LOGIC ---
+  // --- 2. Edit Logic ---
   const handleEdit = (issue) => {
-    setEditingIssue(issue); // Card ka data state mein dalo
-    setIsModalOpen(true);    // Modal kholo
+    setEditingIssue(issue); 
+    setIsModalOpen(true);    
   };
 
-  // --- DELETE LOGIC ---
+  // --- 3. Delete Logic (With Confirmation) ---
   const handleDelete = async (issueId) => {
+    if (!window.confirm("Bhai, pakka delete karna hai?")) return;
     try {
       await axios.delete(`/issues/delete/${issueId}`);
       fetchIssues(); // Refresh board
@@ -43,7 +44,6 @@ const MyTasks = () => {
     }
   };
 
-  // Modal band karte waqt data reset karo
   const handleCloseModal = () => {
     setEditingIssue(null); 
     setIsModalOpen(false);
@@ -54,6 +54,7 @@ const MyTasks = () => {
       <Sidebar />
 
       <main className="flex-1 ml-64 p-8 pt-20">
+        {/* --- Header Section --- */}
         <div className="flex justify-between items-center mb-10">
           <div>
             <h1 className="text-4xl font-bold text-white tracking-tight">My Tasks</h1>
@@ -62,7 +63,7 @@ const MyTasks = () => {
           
           <button 
             onClick={() => {
-              setEditingIssue(null); // Naya issue hai toh purana data saaf karo
+              setEditingIssue(null); 
               setIsModalOpen(true);
             }}
             className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-2xl font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20 flex items-center gap-2"
@@ -71,26 +72,31 @@ const MyTasks = () => {
           </button>
         </div>
 
-        {/* --- Kanban Board Section --- */}
+        {/* --- Kanban Board Section (No Analytics here) --- */}
         {loading ? (
           <div className="flex items-center justify-center h-64 text-slate-500 italic">
-            Fetching your tasks...
+            <div className="flex flex-col items-center gap-2">
+                <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                <span>Fetching your tasks...</span>
+            </div>
           </div>
         ) : (
-          <KanbanBoard 
-            issues={issues} 
-            onRefresh={fetchIssues} 
-            onEdit={handleEdit}    // 👈 Edit function pass kiya
-            onDelete={handleDelete} // 👈 Delete function pass kiya
-          />
+          <div className="mt-4">
+             <KanbanBoard 
+                issues={issues} 
+                onRefresh={fetchIssues} 
+                onEdit={handleEdit} 
+                onDelete={handleDelete} 
+              />
+          </div>
         )}
 
-        {/* --- Issue Create/Edit Modal --- */}
+        {/* --- Modal Section --- */}
         <CreateIssueModal 
           isOpen={isModalOpen} 
           onClose={handleCloseModal} 
           onSuccess={fetchIssues} 
-          initialData={editingIssue} // 👈 Ye modal ko batayega ki Edit karna hai
+          initialData={editingIssue} 
         />
       </main>
     </div>
