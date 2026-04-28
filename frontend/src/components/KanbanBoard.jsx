@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { 
   DndContext, 
-  closestCorners, 
   KeyboardSensor, 
   PointerSensor, 
   useSensor, 
   useSensors,
-  rectIntersection
+  rectIntersection,
+  DragOverlay,
+  defaultDropAnimationSideEffects
 } from '@dnd-kit/core';
+import { arrayMove } from '@dnd-kit/sortable';
 import KanbanColumn from './KanbanColumn';
+import SortableIssueCard from './SortableIssueCard'; // Overlay ke liye
 import API from '../api/axios';
 
 const KanbanBoard = ({ issues: propIssues, onRefresh, onEdit, onDelete }) => {
   const [localIssues, setLocalIssues] = useState(propIssues);
+  const [activeIssue, setActiveIssue] = useState(null); // Drag animation ke liye
   const COLUMNS = ["TODO", "IN PROGRESS", "DONE"];
 
   useEffect(() => {
@@ -24,24 +28,27 @@ const KanbanBoard = ({ issues: propIssues, onRefresh, onEdit, onDelete }) => {
     useSensor(KeyboardSensor)
   );
 
-  // --- MAGIC FUNCTION: Status/Container dhundne ke liye ---
   const findContainer = (id) => {
-    // 1. Agar ID khud ek column ka naam hai (TODO/DONE), toh wahi return karo
     if (COLUMNS.includes(id)) return id;
-
-    // 2. Agar ID card ki hai, toh dhundo wo card kis status/column mein hai
     const issue = localIssues.find((i) => i._id === id);
     return issue ? issue.status : null;
   };
 
+  const handleDragStart = (event) => {
+    const { active } = event;
+    const issue = localIssues.find(i => i._id === active.id);
+    setActiveIssue(issue);
+  };
+
   const handleDragEnd = async (event) => {
     const { active, over } = event;
+    setActiveIssue(null);
+
     if (!over) return;
 
     const activeId = active.id;
     const overId = over.id;
 
-    // Sahi column/status pata lagao
     const activeContainer = findContainer(activeId);
     const overContainer = findContainer(overId);
 
@@ -56,37 +63,58 @@ const KanbanBoard = ({ issues: propIssues, onRefresh, onEdit, onDelete }) => {
     setLocalIssues(updatedIssues);
 
     try {
-      // Backend ko CAPS mein bhejo
       await API.patch(`/issues/status/${activeId}`, { status: overContainer });
-      
-      // Parent ko refresh karne ka signal (Optional, but safe for syncing)
-      // onRefresh(); 
     } catch (err) {
       console.error("Update failed:", err);
-      alert("Status update fail ho gaya, wapas purani jagah!");
       setLocalIssues(propIssues); 
     }
+  };
+
+  const dropAnimation = {
+    sideEffects: defaultDropAnimationSideEffects({
+      styles: {
+        active: {
+          opacity: '0.5',
+        },
+      },
+    }),
   };
 
   return (
     <DndContext 
       sensors={sensors} 
-      // closestCorners ki jagah rectIntersection zyada accurate hota hai cross-column ke liye
       collisionDetection={rectIntersection} 
+      onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-        {COLUMNS.map((status) => (
-          <KanbanColumn 
-            key={status} 
-            id={status} 
-            title={status} 
-            issues={localIssues?.filter(i => i.status === status) || []} 
-            onEdit={onEdit}
-            onDelete={onDelete}
-          />
-        ))}
+      <div className="relative">
+        {/* --- Subtle Background Glow (Linear Style) --- */}
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/2 -right-24 w-80 h-80 bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
+
+        {/* --- Grid Layout --- */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start relative z-10">
+          {COLUMNS.map((status) => (
+            <KanbanColumn 
+              key={status} 
+              id={status} 
+              title={status} 
+              issues={localIssues?.filter(i => i.status === status) || []} 
+              onEdit={onEdit}
+              onDelete={onDelete}
+            />
+          ))}
+        </div>
       </div>
+
+      {/* --- Drag Overlay: Card hawa mein kaise dikhega --- */}
+      <DragOverlay dropAnimation={dropAnimation}>
+        {activeIssue ? (
+          <div className="rotate-3 scale-105 opacity-90 transition-transform">
+            <SortableIssueCard issue={activeIssue} isOverlay />
+          </div>
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 };
