@@ -1,22 +1,57 @@
 import { User } from "../models/User.model.js";
+import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
+
+// --- 🚀 NEW: UPLOAD AVATAR (Cloudinary Logic) ---
+const uploadAvatar = async (req, res) => {
+    try {
+        // 1. Check karo file aayi hai ya nahi (Multer req.file mein deta hai)
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: "No image file provided" });
+        }
+
+        // 2. Cloudinary par upload karo
+        const result = await cloudinary.uploader.upload(req.file.path, {
+            folder: "avatars", // Cloudinary mein 'avatars' folder ban jayega
+            resource_type: "image",
+        });
+
+        // 3. Local temp file ko delete karo (Zaruri hai!)
+        if (fs.existsSync(req.file.path)) {
+            fs.unlinkSync(req.file.path);
+        }
+
+        // 4. Client ko Cloudinary ka Secure URL bhej do
+        return res.status(200).json({
+            success: true,
+            data: { avatar: result.secure_url },
+            message: "Avatar uploaded to cloud successfully! 📸"
+        });
+
+    } catch (error) {
+        // Agar fail ho jaye toh bhi local file delete karni hai
+        if (req.file && fs.existsSync(req.file.path)) {
+            fs.unlinkSync(req.file.path);
+        }
+        console.error("Cloudinary Error:", error);
+        return res.status(500).json({ success: false, message: "Failed to upload to cloud" });
+    }
+};
 
 // --- USER REGISTER ---
 const registerUser = async (req, res) => {
     try {
         const { username, email, fullName, password } = req.body;
 
-        // 1. Validation: Check karo sab fields hain ya nahi
         if ([username, email, fullName, password].some((field) => field?.trim() === "")) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        // 2. Check karo user pehle se toh nahi hai
         const existedUser = await User.findOne({ $or: [{ username }, { email }] });
         if (existedUser) {
             return res.status(409).json({ message: "User with email or username already exists" });
         }
 
-        // 3. Create User (Password model mein encrypt ho jayega automatically)
         const user = await User.create({
             fullName,
             email,
@@ -24,10 +59,9 @@ const registerUser = async (req, res) => {
             username: username.toLowerCase(),
         });
 
-        // 4. Return User details (password hatakar)
         const createdUser = await User.findById(user._id).select("-password");
         if (!createdUser) {
-            return res.status(500).json({ message: "Something went wrong while registering user" });
+            return res.status(500).json({ message: "Registration failed on server" });
         }
 
         return res.status(201).json({
@@ -46,34 +80,24 @@ const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // 1. Validation
         if (!email || !password) {
             return res.status(400).json({ message: "Email and password are required" });
         }
 
-        // 2. Find user
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "User does not exist" });
         }
 
-        // 3. Match password
         const isPasswordValid = await user.isPasswordCorrect(password);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: "Invalid user credentials" });
+            return res.status(401).json({ message: "Invalid credentials" });
         }
 
-        // 4. Generate Access Token
         const accessToken = user.generateAccessToken();
-
-        // 5. User response without password
         const loggedInUser = await User.findById(user._id).select("-password");
 
-        // 6. Cookie options (Professional/Secure way)
-        const options = {
-            httpOnly: true,
-            secure: true
-        };
+        const options = { httpOnly: true, secure: true };
 
         return res.status(200)
             .cookie("accessToken", accessToken, options)
@@ -81,7 +105,7 @@ const loginUser = async (req, res) => {
                 success: true,
                 user: loggedInUser,
                 accessToken,
-                message: "User logged in successfully! 🚀"
+                message: "Logged in successfully! 🚀"
             });
 
     } catch (error) {
@@ -93,24 +117,17 @@ const loginUser = async (req, res) => {
 const updateAccount = async (req, res) => {
     try {
         const { fullName, email, bio, avatar } = req.body;
-        const userId = req.user._id; // From auth middleware
+        const userId = req.user._id;
 
-        // Validation
         if (!fullName || !email) {
-            return res.status(400).json({ message: "Full name and email are required" });
+            return res.status(400).json({ message: "Name and email are required" });
         }
 
-        // Check if email already exists (excluding current user)
-        const existingUser = await User.findOne({ 
-            email, 
-            _id: { $ne: userId } 
-        });
-        
+        const existingUser = await User.findOne({ email, _id: { $ne: userId } });
         if (existingUser) {
-            return res.status(409).json({ message: "Email already in use by another account" });
+            return res.status(409).json({ message: "Email already in use" });
         }
 
-        // Update user
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             {
@@ -118,20 +135,16 @@ const updateAccount = async (req, res) => {
                     fullName,
                     email,
                     bio: bio || "",
-                    avatar: avatar || ""
+                    avatar: avatar || "" // Frontend se aaya naya Cloudinary URL yahan save hoga
                 }
             },
             { new: true }
         ).select("-password");
 
-        if (!updatedUser) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
         return res.status(200).json({
             success: true,
             data: updatedUser,
-            message: "Account updated successfully! 🎉"
+            message: "Account updated! 🎉"
         });
 
     } catch (error) {
@@ -142,23 +155,17 @@ const updateAccount = async (req, res) => {
 // --- GET CURRENT USER ---
 const getCurrentUser = async (req, res) => {
     try {
-        const userId = req.user._id;
-        
-        const user = await User.findById(userId).select("-password");
-        
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
+        const user = await User.findById(req.user._id).select("-password");
+        if (!user) return res.status(404).json({ message: "User not found" });
 
         return res.status(200).json({
             success: true,
             data: user,
-            message: "User fetched successfully"
+            message: "User fetched"
         });
-
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
 
-export { registerUser, loginUser, updateAccount, getCurrentUser };
+export { registerUser, loginUser, updateAccount, getCurrentUser, uploadAvatar };
