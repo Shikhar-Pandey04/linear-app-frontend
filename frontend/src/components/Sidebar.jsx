@@ -17,27 +17,28 @@ import {
 
 const NavItem = ({ icon: Icon, label, badge, active = false, onClick }) => (
   <motion.div
-    whileHover={{ x: 4, backgroundColor: 'rgba(255, 255, 255, 0.03)' }}
+    whileHover={{ x: 4, backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
     onClick={onClick}
-    className={`flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-all mb-1 group ${
+    className={`flex items-center justify-between px-4 py-3 rounded-xl cursor-pointer transition-all mb-2 group ${
       active 
-        ? 'bg-indigo-600/10 text-indigo-400 border border-indigo-500/10' 
-        : 'text-gray-500 hover:text-gray-300'
+        ? 'bg-indigo-600/15 text-indigo-400 border border-indigo-500/20' 
+        : 'text-slate-500 hover:text-slate-200'
     }`}
   >
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-4">
       <Icon 
-        size={18} 
+        size={20} 
         strokeWidth={active ? 2.5 : 2} 
-        className={active ? 'text-indigo-500' : 'group-hover:text-gray-400'} 
+        className={active ? 'text-indigo-500' : 'group-hover:text-slate-400'} 
       />
-      <span className={`text-[13px] ${active ? 'font-bold' : 'font-medium'}`}>
+      {/* --- Label Font Scaled Up --- */}
+      <span className={`text-[14px] tracking-wide ${active ? 'font-black' : 'font-bold'}`}>
         {label}
       </span>
     </div>
     
     {badge && (
-      <span className="bg-indigo-600/20 text-indigo-400 text-[10px] font-bold px-1.5 py-0.5 rounded-md border border-indigo-500/10">
+      <span className="bg-indigo-600/20 text-indigo-400 text-[11px] font-black px-2 py-0.5 rounded-lg border border-indigo-500/10">
         {badge}
       </span>
     )}
@@ -57,22 +58,22 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-64 h-screen bg-[#0b0e11] border-r border-slate-800/20 flex flex-col justify-between p-4 fixed left-0 top-0 z-50">
+    <div className="w-66 h-screen bg-[#0b0e11] border-r border-slate-800/30 flex flex-col justify-between p-5 fixed left-0 top-0 z-50">
       
-      {/* --- TOP SECTION (Brand + Main Nav) --- */}
+      {/* --- TOP SECTION --- */}
       <div>
-        {/* Brand Logo */}
-        <div className="flex items-center gap-3 mb-10 px-2 mt-2">
-          <div className="p-1.5 bg-indigo-600 rounded-lg shadow-lg shadow-indigo-500/40">
-            <Hexagon size={18} className="text-white" fill="white" />
+        {/* Brand Logo (Bigger) */}
+        <div className="flex items-center gap-4 mb-12 px-2 mt-4">
+          <div className="p-2 bg-indigo-600 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.4)]">
+            <Hexagon size={22} className="text-white" fill="white" />
           </div>
-          <span className="text-xl font-black tracking-tighter text-white">World</span>
+          <span className="text-2xl font-black tracking-tighter text-white italic">World</span>
         </div>
 
         {/* Menu Section */}
-        <div className="mb-8">
-          <p className="text-[10px] font-bold text-gray-700 uppercase tracking-[0.2em] mb-4 px-2">
-            Menu
+        <div className="mb-10">
+          <p className="text-[11px] font-black text-slate-700 uppercase tracking-[0.3em] mb-5 px-2">
+            Main Menu
           </p>
           <NavItem 
             icon={Home} 
@@ -92,8 +93,8 @@ const Sidebar = () => {
         </div>
 
         {/* Records Section */}
-        <div className="mb-8">
-          <p className="text-[10px] font-bold text-gray-700 uppercase tracking-[0.2em] mb-4 px-2">
+        <div className="mb-10">
+          <p className="text-[11px] font-black text-slate-700 uppercase tracking-[0.3em] mb-5 px-2">
             Records
           </p>
           <NavItem icon={FolderOpen} label="Projects" />
@@ -102,9 +103,8 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* --- BOTTOM SECTION (Footer Actions) --- */}
-      {/* mt-auto use nahi kiya, justify-between handles it better */}
-      <div className="pb-4 border-t border-slate-800/40 pt-6">
+      {/* --- BOTTOM SECTION (Perfectly Anchored) --- */}
+      <div className="pb-6 border-t border-slate-800/40 pt-8">
         <NavItem 
           icon={Settings} 
           label="Settings" 
@@ -117,7 +117,7 @@ const Sidebar = () => {
           active={currentPath === '/support'} 
           onClick={() => navigate('/support')} 
         />
-        <div className="mt-2">
+        <div className="mt-4">
           <NavItem 
             icon={LogOut} 
             label="Logout" 
