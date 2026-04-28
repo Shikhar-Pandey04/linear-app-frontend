@@ -3,6 +3,7 @@ import Sidebar from '../components/Sidebar';
 import KanbanBoard from '../components/KanbanBoard';
 import CreateIssueModal from '../components/CreateIssueModal';
 import axios from '../api/axios';
+import { Plus } from 'lucide-react'; // 👈 Icon use karne ke liye
 
 const MyTasks = () => {
   const [issues, setIssues] = useState([]);
@@ -32,7 +33,7 @@ const MyTasks = () => {
     setIsModalOpen(true);    
   };
 
-  // --- 3. Delete Logic (With Confirmation) ---
+  // --- 3. Delete Logic ---
   const handleDelete = async (issueId) => {
     if (!window.confirm("Bhai, pakka delete karna hai?")) return;
     try {
@@ -50,32 +51,40 @@ const MyTasks = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0b0e11]">
+    <div className="flex min-h-screen bg-[#0b0e11] text-slate-200">
       <Sidebar />
 
-      <main className="flex-1 ml-64 p-8 pt-20">
+      <main className="flex-1 ml-64 p-10 pt-24">
         {/* --- Header Section --- */}
         <div className="flex justify-between items-center mb-10">
           <div>
-            <h1 className="text-4xl font-bold text-white tracking-tight">My Tasks</h1>
-            <p className="text-slate-500 mt-1 font-medium">Manage and track your active project issues</p>
+            <h1 className="text-5xl font-black text-white tracking-tighter mb-1">My Tasks</h1>
+            <p className="text-slate-500 font-medium text-sm tracking-wide">Manage and track your active project issues</p>
           </div>
           
+          {/* --- 🚀 PREMIMUM BUTTON REDESIGN (Exact Match to Image 2) --- 
+            Changes: 
+            - bg-indigo-600: Deep indigo color
+            - rounded-lg: Standard rounded rectangular corners (removed pill shape)
+            - px-4 py-2 text-sm font-semibold: Tighter, standard button padding/sizing
+            - Plus Icon: Used Lucide icon instead of manual +
+          */}
           <button 
             onClick={() => {
               setEditingIssue(null); 
               setIsModalOpen(true);
             }}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-2xl font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20 flex items-center gap-2"
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 shadow-sm"
           >
-            <span className="text-xl">+</span> New Issue
+            <Plus size={16} />
+            <span>New Issue</span>
           </button>
         </div>
 
-        {/* --- Kanban Board Section (No Analytics here) --- */}
+        {/* --- Kanban Board Section --- */}
         {loading ? (
           <div className="flex items-center justify-center h-64 text-slate-500 italic">
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-3">
                 <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
                 <span>Fetching your tasks...</span>
             </div>
