@@ -7,7 +7,7 @@ const CreateIssueModal = ({ isOpen, onClose, onSuccess, initialData = null, proj
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        priority: 'low', // Default lowercase rakho
+        priority: 'medium', 
         status: 'todo'
     });
     const [loading, setLoading] = useState(false);
@@ -29,31 +29,24 @@ const CreateIssueModal = ({ isOpen, onClose, onSuccess, initialData = null, proj
         e.preventDefault();
         if (!formData.title.trim()) return alert("Title toh dalo bhai!");
         
-        // --- Sabse Zaruri Check ---
-        // Agar naya issue bana rahe ho, toh projectId hona hi chahiye
-        if (!initialData && !projectId) {
-            return alert("Bhai, bina project ke task kahan save hoga? Project ID missing hai.");
-        }
-
         setLoading(true);
 
+        // --- PROJECT KI TENSION KHATAM ---
         const payload = {
             title: formData.title.trim(),
             description: formData.description.trim(),
-            // Backend lowercase maang raha hai
             priority: formData.priority.toLowerCase(),
             status: initialData ? formData.status.toLowerCase() : "todo",
-            // Ye rahi wo missing field!
-            project: projectId 
+            project: projectId || null // Agar ID nahi hai toh null bhej do, backend handle kar lega
         };
         
-        console.log("🚀 Backend ko ye bhej raha hoon:", payload);
+        console.log("🚀 Request bhej raha hoon:", payload);
 
         try {
             if (initialData) {
                 await API.patch(`/issues/status/${initialData._id}`, payload);
             } else {
-                // Route check karna: '/issues/create' ya '/issues/create-issue'
+                // Tumhare routes ke hisaab se check kar lena: '/issues/create'
                 await API.post('/issues/create', payload); 
             }
 
@@ -61,7 +54,7 @@ const CreateIssueModal = ({ isOpen, onClose, onSuccess, initialData = null, proj
             onClose();
         } catch (error) {
             const errorMsg = error.response?.data?.message || error.message;
-            console.error("❌ Saving Error Details:", error.response?.data);
+            console.error("❌ Error:", error.response?.data);
             alert(`Garbad ho gayi: ${errorMsg}`);
         } finally {
             setLoading(false);
