@@ -1,16 +1,40 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Target, Zap, CheckCircle2 } from 'lucide-react';
+import { Target, Zap, CheckCircle2, TrendingUp } from 'lucide-react';
 
-const StatCard = ({ title, value, icon: Icon, colorClass }) => (
-  <div className="bg-[#161b22] border border-slate-800 p-6 rounded-2xl shadow-sm hover:border-slate-700 transition-colors">
-    <div className="flex justify-between items-start">
-      <div>
-        <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.2em]">{title}</p>
-        <h3 className="text-3xl font-bold mt-2 text-white">{value}</h3>
+const StatCard = ({ title, value, icon: Icon, colorClass, borderClass, glowClass, waveColor }) => (
+  <div className={`relative flex-1 p-7 bg-[#161b22]/40 border ${borderClass} rounded-3xl overflow-hidden group transition-all duration-500 hover:scale-[1.03] ${glowClass}`}>
+    
+    {/* --- Premium Sparkline Wave Background --- */}
+    <div className={`absolute bottom-0 right-0 w-36 opacity-10 group-hover:opacity-30 transition-opacity duration-700 ${waveColor}`}>
+      <svg viewBox="0 0 100 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path 
+          d="M0 30Q15 35 30 15T60 20T100 5" 
+          stroke="currentColor" 
+          strokeWidth="3" 
+          strokeLinecap="round"
+          className="drop-shadow-lg"
+        />
+      </svg>
+    </div>
+
+    <div className="flex items-start gap-6 relative z-10">
+      {/* Icon with Glassmorphism Effect */}
+      <div className={`p-4 rounded-2xl bg-slate-900/80 border border-white/5 shadow-2xl flex items-center justify-center transition-transform group-hover:rotate-6 ${colorClass}`}>
+        <Icon size={24} strokeWidth={2.5} />
       </div>
-      <div className={`p-3 rounded-xl bg-slate-900 border border-slate-800 ${colorClass}`}>
-        <Icon size={20} />
+
+      <div className="flex flex-col">
+        <p className="text-slate-500 text-[11px] font-black uppercase tracking-[0.25em]">{title}</p>
+        <div className="flex items-baseline gap-2 mt-1">
+          <h2 className="text-4xl font-black text-white tracking-tighter">{value}</h2>
+          <span className="text-[10px] text-slate-600 font-bold flex items-center gap-0.5">
+            <TrendingUp size={10} /> +2.5%
+          </span>
+        </div>
+        <p className="text-slate-600 text-[10px] font-bold mt-2 uppercase tracking-widest opacity-60 group-hover:opacity-100 transition-opacity">
+          Live Database Sync
+        </p>
       </div>
     </div>
   </div>
@@ -18,8 +42,7 @@ const StatCard = ({ title, value, icon: Icon, colorClass }) => (
 
 const Analytics = ({ issues = [] }) => {
   
-  // --- CRITICAL FIX: Kachra data filter out karo ---
-  // Sirf wahi issues lo jo Board ke standards (UPPERCASE) par khare utarte hain
+  // --- Kachra Data Filter: Sirf Valid Status uthao ---
   const activeIssues = issues.filter(i => 
     ['TODO', 'IN PROGRESS', 'DONE', 'BACKLOG'].includes(i.status?.toUpperCase())
   );
@@ -27,59 +50,44 @@ const Analytics = ({ issues = [] }) => {
   const stats = [
     { 
       title: "Total Issues", 
-      // Ab ye sirf valid issues ginega, database ka purana lowercase kachra nahi
       value: activeIssues.length, 
       icon: Target, 
-      colorClass: "text-indigo-500" 
+      colorClass: "text-indigo-500",
+      borderClass: "border-indigo-500/10",
+      glowClass: "hover:shadow-[0_0_30px_-10px_rgba(79,70,229,0.3)]",
+      waveColor: "text-indigo-500"
     },
     { 
       title: "In Progress", 
       value: activeIssues.filter(i => i.status === 'IN PROGRESS').length, 
       icon: Zap, 
-      colorClass: "text-amber-400" 
+      colorClass: "text-amber-400",
+      borderClass: "border-amber-500/10",
+      glowClass: "hover:shadow-[0_0_30px_-10px_rgba(245,158,11,0.3)]",
+      waveColor: "text-amber-400"
     },
     { 
       title: "Completed", 
       value: activeIssues.filter(i => i.status === 'DONE').length, 
       icon: CheckCircle2, 
-      colorClass: "text-emerald-500" 
+      colorClass: "text-emerald-500",
+      borderClass: "border-emerald-500/10",
+      glowClass: "hover:shadow-[0_0_30px_-10px_rgba(16,185,129,0.3)]",
+      waveColor: "text-emerald-500"
     },
   ];
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }} 
+      initial={{ opacity: 0, y: 30 }} 
       animate={{ opacity: 1, y: 0 }} 
-      className="space-y-8"
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="w-full"
     >
-      {/* Stats Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {stats.map((s, i) => (
-          <StatCard 
-            key={i} 
-            title={s.title} 
-            value={s.value} 
-            icon={s.icon} 
-            colorClass={s.colorClass} 
-          />
+          <StatCard key={i} {...s} />
         ))}
-      </div>
-
-      {/* Analytics Visualization Placeholder */}
-      <div className="h-64 bg-[#161b22]/40 border border-slate-800 border-dashed rounded-3xl flex flex-col items-center justify-center text-slate-700 group">
-          <motion.span 
-            animate={{ scale: [1, 1.1, 1] }} 
-            transition={{ duration: 2, repeat: Infinity }}
-            className="text-4xl mb-3"
-          >
-            📊
-          </motion.span>
-          <p className="italic font-bold text-xs uppercase tracking-widest text-slate-500">
-            Analytics Visualization Coming Soon
-          </p>
-          <p className="text-[10px] mt-2 text-slate-600 font-medium">
-            Charts, burn-down, and velocity tracking.
-          </p>
       </div>
     </motion.div>
   );
