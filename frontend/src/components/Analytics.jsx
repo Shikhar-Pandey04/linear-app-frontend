@@ -3,35 +3,27 @@ import { motion } from 'framer-motion';
 import { Target, Zap, CheckCircle2 } from 'lucide-react';
 
 const StatCard = ({ title, value, icon: Icon, colorClass, borderClass, glowClass }) => (
-  <div className={`relative flex-1 p-8 bg-[#161b22]/50 border ${borderClass} rounded-[2.5rem] transition-all duration-500 hover:scale-[1.05] ${glowClass} shadow-2xl`}>
+  <div className={`relative flex-1 p-6 bg-[#161b22]/50 border ${borderClass} rounded-2xl transition-all duration-300 hover:bg-[#1c2128] ${glowClass}`}>
     
-    <div className="flex items-center gap-6 relative z-10">
-      {/* Big Icon Container with Premium Border */}
-      <div className={`p-5 rounded-2xl bg-slate-900 border border-white/5 shadow-inner ${colorClass}`}>
-        <Icon size={32} strokeWidth={2.5} />
+    <div className="flex items-center gap-5 relative z-10">
+      {/* Balanced Icon Container */}
+      <div className={`p-4 rounded-xl bg-slate-900 border border-white/5 ${colorClass}`}>
+        <Icon size={24} strokeWidth={2.5} />
       </div>
 
       <div className="flex flex-col">
-        {/* Uppercase Label - Scaled up for readability */}
-        <p className="text-slate-500 text-xs font-black uppercase tracking-[0.3em] mb-1">
+        <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-0.5">
           {title}
         </p>
-        {/* Big Bold Value - World Class Typography */}
-        <h2 className="text-6xl font-black text-white tracking-tighter">
+        <h2 className="text-4xl font-black text-white tracking-tighter">
           {value}
         </h2>
       </div>
     </div>
-    
-    {/* Subtle Background Glow for each card */}
-    <div className={`absolute -bottom-10 -right-10 w-32 h-32 blur-[60px] opacity-20 rounded-full ${colorClass.split(' ')[0].replace('text-', 'bg-')}`}></div>
   </div>
 );
 
 const Analytics = ({ issues = [] }) => {
-  
-  // --- CRITICAL FILTER: Database ka lowercase kachra hatao ---
-  // Sirf vahi issues count honge jo Board par valid hain
   const activeIssues = issues.filter(i => 
     ['TODO', 'IN PROGRESS', 'DONE'].includes(i.status?.toUpperCase())
   );
@@ -43,7 +35,7 @@ const Analytics = ({ issues = [] }) => {
       icon: Target, 
       colorClass: "text-indigo-500",
       borderClass: "border-indigo-500/10",
-      glowClass: "hover:shadow-indigo-500/10"
+      glowClass: "hover:shadow-indigo-500/5"
     },
     { 
       title: "In Progress", 
@@ -51,7 +43,7 @@ const Analytics = ({ issues = [] }) => {
       icon: Zap, 
       colorClass: "text-amber-400",
       borderClass: "border-amber-500/10",
-      glowClass: "hover:shadow-amber-500/10"
+      glowClass: "hover:shadow-amber-500/5"
     },
     { 
       title: "Completed", 
@@ -59,31 +51,19 @@ const Analytics = ({ issues = [] }) => {
       icon: CheckCircle2, 
       colorClass: "text-emerald-500",
       borderClass: "border-emerald-500/10",
-      glowClass: "hover:shadow-emerald-500/10"
+      glowClass: "hover:shadow-emerald-500/5"
     },
   ];
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 30 }} 
+      initial={{ opacity: 0, y: 20 }} 
       animate={{ opacity: 1, y: 0 }} 
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="w-full"
+      className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full"
     >
-      {/* Stats Cards Grid - Large Gap for Premium feel */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        {stats.map((s, i) => (
-          <StatCard 
-            key={i} 
-            title={s.title} 
-            value={s.value} 
-            icon={s.icon} 
-            colorClass={s.colorClass} 
-            borderClass={s.borderClass}
-            glowClass={s.glowClass}
-          />
-        ))}
-      </div>
+      {stats.map((s, i) => (
+        <StatCard key={i} {...s} />
+      ))}
     </motion.div>
   );
 };
