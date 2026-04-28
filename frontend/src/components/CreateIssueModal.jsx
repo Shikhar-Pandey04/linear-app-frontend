@@ -3,12 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import API from '../api/axios';
 
-const CreateIssueModal = ({ isOpen, onClose, onSuccess, initialData = null }) => {
+const CreateIssueModal = ({ isOpen, onClose, onSuccess, initialData = null, projectId }) => {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        priority: 'MEDIUM',
-        status: 'TODO'
+        priority: 'low', // Default lowercase rakho
+        status: 'todo'
     });
     const [loading, setLoading] = useState(false);
 
@@ -17,11 +17,11 @@ const CreateIssueModal = ({ isOpen, onClose, onSuccess, initialData = null }) =>
             setFormData({
                 title: initialData.title || '',
                 description: initialData.description || '',
-                priority: initialData.priority?.toUpperCase() || 'MEDIUM',
-                status: initialData.status?.toUpperCase() || 'TODO'
+                priority: initialData.priority?.toLowerCase() || 'medium',
+                status: initialData.status?.toLowerCase() || 'todo'
             });
         } else {
-            setFormData({ title: '', description: '', priority: 'MEDIUM', status: 'TODO' });
+            setFormData({ title: '', description: '', priority: 'medium', status: 'todo' });
         }
     }, [initialData, isOpen]);
 
@@ -29,14 +29,22 @@ const CreateIssueModal = ({ isOpen, onClose, onSuccess, initialData = null }) =>
         e.preventDefault();
         if (!formData.title.trim()) return alert("Title toh dalo bhai!");
         
+        // --- Sabse Zaruri Check ---
+        // Agar naya issue bana rahe ho, toh projectId hona hi chahiye
+        if (!initialData && !projectId) {
+            return alert("Bhai, bina project ke task kahan save hoga? Project ID missing hai.");
+        }
+
         setLoading(true);
 
-        // --- DEBUG LOG (F12 Console mein check karna) ---
         const payload = {
             title: formData.title.trim(),
             description: formData.description.trim(),
-            priority: formData.priority.toUpperCase(),
-            status: initialData ? formData.status.toUpperCase() : "TODO" // Naye issue ke liye hamesha 'TODO'
+            // Backend lowercase maang raha hai
+            priority: formData.priority.toLowerCase(),
+            status: initialData ? formData.status.toLowerCase() : "todo",
+            // Ye rahi wo missing field!
+            project: projectId 
         };
         
         console.log("🚀 Backend ko ye bhej raha hoon:", payload);
@@ -45,16 +53,15 @@ const CreateIssueModal = ({ isOpen, onClose, onSuccess, initialData = null }) =>
             if (initialData) {
                 await API.patch(`/issues/status/${initialData._id}`, payload);
             } else {
-                // Pakka karlo backend route yahi hai na?
-                await API.post('/issues/create-issue', payload);
+                // Route check karna: '/issues/create' ya '/issues/create-issue'
+                await API.post('/issues/create', payload); 
             }
 
             if (onSuccess) onSuccess();
             onClose();
         } catch (error) {
-            // Error handling ko aur detail mein kiya hai
             const errorMsg = error.response?.data?.message || error.message;
-            console.error("❌ Saving Error:", error.response?.data);
+            console.error("❌ Saving Error Details:", error.response?.data);
             alert(`Garbad ho gayi: ${errorMsg}`);
         } finally {
             setLoading(false);
@@ -114,7 +121,7 @@ const CreateIssueModal = ({ isOpen, onClose, onSuccess, initialData = null }) =>
                                 <div className="space-y-3">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Priority</label>
                                     <div className="flex gap-3">
-                                        {['LOW', 'MEDIUM', 'HIGH'].map((p) => (
+                                        {['low', 'medium', 'high'].map((p) => (
                                             <button
                                                 key={p} type="button"
                                                 onClick={() => setFormData({...formData, priority: p})}
