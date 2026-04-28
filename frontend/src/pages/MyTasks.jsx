@@ -7,39 +7,25 @@ import { Plus } from 'lucide-react';
 
 const MyTasks = () => {
   const [issues, setIssues] = useState([]);
-  const [projects, setProjects] = useState([]); // 👈 Naya: Projects store karne ke liye
-  const [selectedProjectId, setSelectedProjectId] = useState(""); // 👈 Naya: Selected Project
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingIssue, setEditingIssue] = useState(null); 
   const [loading, setLoading] = useState(true);
 
-  // --- 1. Fetch Issues & Projects ---
-  const fetchData = async () => {
+  // --- 1. Sirf Issues Fetch Karo (No Projects!) ---
+  const fetchIssues = async () => {
     setLoading(true);
     try {
-      // Dono data ek saath fetch karte hain
-      const [issuesRes, projectsRes] = await Promise.all([
-        axios.get('/issues/get-issues'),
-        axios.get('/projects/get-projects') // 👈 Make sure ye route sahi hai
-      ]);
-
-      setIssues(issuesRes.data.data || []);
-      const fetchedProjects = projectsRes.data.data || [];
-      setProjects(fetchedProjects);
-
-      // Agar projects hain, toh pehle wale ko default select kar lo
-      if (fetchedProjects.length > 0) {
-        setSelectedProjectId(fetchedProjects[0]._id);
-      }
+      const res = await axios.get('/issues/get-issues');
+      setIssues(res.data.data || []);
     } catch (err) {
-      console.error("Data fetch error:", err);
+      console.error("Issues fetch error:", err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData();
+    fetchIssues();
   }, []);
 
   const handleEdit = (issue) => {
@@ -51,7 +37,7 @@ const MyTasks = () => {
     if (!window.confirm("Bhai, pakka delete karna hai?")) return;
     try {
       await axios.delete(`/issues/delete/${issueId}`);
-      fetchData(); 
+      fetchIssues(); 
     } catch (err) {
       console.error("Delete failed:", err);
       alert("Delete nahi ho paya bhai!");
@@ -71,25 +57,11 @@ const MyTasks = () => {
         <div className="flex justify-between items-center mb-10">
           <div>
             <h1 className="text-5xl font-black text-white tracking-tighter mb-1">My Tasks</h1>
-            <p className="text-slate-500 font-medium text-sm tracking-wide">Manage your project issues</p>
-            
-            {/* --- Project Selector (Simple Dropdown) --- */}
-            {projects.length > 0 && (
-              <select 
-                className="mt-4 bg-[#161b22] border border-slate-800 text-xs font-bold text-indigo-400 p-2 rounded-lg outline-none"
-                value={selectedProjectId}
-                onChange={(e) => setSelectedProjectId(e.target.value)}
-              >
-                {projects.map(p => (
-                  <option key={p._id} value={p._id}>{p.name}</option>
-                ))}
-              </select>
-            )}
+            <p className="text-slate-500 font-medium text-sm tracking-wide">Manage your active issues</p>
           </div>
           
           <button 
             onClick={() => {
-              if(!selectedProjectId) return alert("Pehle ek project banao bhai!");
               setEditingIssue(null); 
               setIsModalOpen(true);
             }}
@@ -111,20 +83,19 @@ const MyTasks = () => {
           <div className="mt-4">
              <KanbanBoard 
                 issues={issues} 
-                onRefresh={fetchData} 
+                onRefresh={fetchIssues} 
                 onEdit={handleEdit} 
                 onDelete={handleDelete} 
               />
           </div>
         )}
 
-        {/* --- MODAL SECTION (Ab projectId pass ho rahi hai!) --- */}
+        {/* --- Modal mein projectId bhejne ki zarurat nahi hai --- */}
         <CreateIssueModal 
           isOpen={isModalOpen} 
           onClose={handleCloseModal} 
-          onSuccess={fetchData} 
+          onSuccess={fetchIssues} 
           initialData={editingIssue} 
-          projectId={selectedProjectId} // 👈 Ye rahi missing link!
         />
       </main>
     </div>
