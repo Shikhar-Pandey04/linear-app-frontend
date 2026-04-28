@@ -1,0 +1,12 @@
+### Create a New Issue (Linear App Test)
+POST http://localhost:5000/api/v1/issues/create
+Content-Type: application/json
+
+{
+  "title": "Fix Sidebar Navigation",
+  "description": "Sidebar is overlapping on mobile screens. Needs CSS fix.",
+  "status": "todo",
+  "priority": "high",
+  "creator": "65f1a2b3c4d5e6f7a8b9c0d1",
+  "project": "65f1a2b3c4d5e6f7a8b9c0d2"
+}
