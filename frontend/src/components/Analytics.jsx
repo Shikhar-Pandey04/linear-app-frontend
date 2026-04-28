@@ -2,10 +2,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Target, Zap, CheckCircle2, TrendingUp } from 'lucide-react';
 
+// StatCard with Premium Design from Image 2
 const StatCard = ({ title, value, icon: Icon, colorClass, borderClass, glowClass, waveColor }) => (
   <div className={`relative flex-1 p-7 bg-[#161b22]/40 border ${borderClass} rounded-3xl overflow-hidden group transition-all duration-500 hover:scale-[1.03] ${glowClass}`}>
     
-    {/* --- Premium Sparkline Wave Background --- */}
+    {/* --- Sparkline Wave Background (Subtle linear design) --- */}
     <div className={`absolute bottom-0 right-0 w-36 opacity-10 group-hover:opacity-30 transition-opacity duration-700 ${waveColor}`}>
       <svg viewBox="0 0 100 40" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path 
@@ -19,7 +20,7 @@ const StatCard = ({ title, value, icon: Icon, colorClass, borderClass, glowClass
     </div>
 
     <div className="flex items-start gap-6 relative z-10">
-      {/* Icon with Glassmorphism Effect */}
+      {/* Modern Icon with Glassmorphism Effect */}
       <div className={`p-4 rounded-2xl bg-slate-900/80 border border-white/5 shadow-2xl flex items-center justify-center transition-transform group-hover:rotate-6 ${colorClass}`}>
         <Icon size={24} strokeWidth={2.5} />
       </div>
@@ -42,14 +43,14 @@ const StatCard = ({ title, value, icon: Icon, colorClass, borderClass, glowClass
 
 const Analytics = ({ issues = [] }) => {
   
-  // --- Kachra Data Filter: Sirf Valid Status uthao ---
+  // --- CRITICAL FIX: Kachra data filter out karo ---
   const activeIssues = issues.filter(i => 
     ['TODO', 'IN PROGRESS', 'DONE', 'BACKLOG'].includes(i.status?.toUpperCase())
   );
 
   const stats = [
     { 
-      title: "Total Issues", 
+      title: "Total Tasks", 
       value: activeIssues.length, 
       icon: Target, 
       colorClass: "text-indigo-500",
@@ -82,8 +83,9 @@ const Analytics = ({ issues = [] }) => {
       initial={{ opacity: 0, y: 30 }} 
       animate={{ opacity: 1, y: 0 }} 
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="w-full"
+      className="w-full space-y-12"
     >
+      {/* Stats Cards Grid (Matches Image 2 Layout) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {stats.map((s, i) => (
           <StatCard key={i} {...s} />
