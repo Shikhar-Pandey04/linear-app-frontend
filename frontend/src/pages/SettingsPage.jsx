@@ -3,12 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   User,
   Camera,
-  Moon,
-  Sun,
   Save,
-  Loader2,
-  Palette,
-  ShieldCheck
+  Loader2
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import API from '../api/axios';
@@ -34,20 +30,24 @@ const SettingsPage = () => {
 
   const fileInputRef = useRef(null);
 
-  // Load theme + user data
+  // Load saved theme + user data
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     setIsDarkMode(savedTheme === 'dark');
     fetchUserData();
   }, []);
 
-  // Apply Theme
+  // FIXED THEME SYSTEM
   useEffect(() => {
+    const root = document.documentElement;
+
     if (isDarkMode) {
-      document.documentElement.classList.add('dark');
+      root.classList.remove('light-mode');
+      root.classList.add('dark');
       localStorage.setItem('theme', 'dark');
     } else {
-      document.documentElement.classList.remove('dark');
+      root.classList.remove('dark');
+      root.classList.add('light-mode');
       localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);
@@ -69,8 +69,6 @@ const SettingsPage = () => {
         });
       }
     } catch (error) {
-      console.error(error);
-
       setMessage({
         type: 'error',
         text: 'Failed to load profile.'
@@ -140,7 +138,7 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-white dark:bg-[#0b0e11] text-black dark:text-white transition-all">
+    <div className="flex min-h-screen text-[var(--text-primary)] bg-[var(--bg-primary)] transition-all duration-300">
       <Sidebar />
 
       <main className="flex-1 ml-64 p-12 pt-28">
@@ -148,7 +146,7 @@ const SettingsPage = () => {
           Settings
         </h1>
 
-        <p className="text-slate-500 mb-10">
+        <p className="text-[var(--text-secondary)] mb-10">
           Manage your profile and preferences
         </p>
 
@@ -159,7 +157,7 @@ const SettingsPage = () => {
             className={`px-6 py-3 rounded-xl font-bold ${
               activeTab === 'profile'
                 ? 'bg-indigo-600 text-white'
-                : 'bg-slate-200 dark:bg-slate-800'
+                : 'bg-[var(--bg-card)]'
             }`}
           >
             Profile
@@ -170,7 +168,7 @@ const SettingsPage = () => {
             className={`px-6 py-3 rounded-xl font-bold ${
               activeTab === 'appearance'
                 ? 'bg-indigo-600 text-white'
-                : 'bg-slate-200 dark:bg-slate-800'
+                : 'bg-[var(--bg-card)]'
             }`}
           >
             Appearance
@@ -199,8 +197,9 @@ const SettingsPage = () => {
           <Loader2 className="animate-spin" />
         ) : activeTab === 'profile' ? (
           <div className="space-y-8 max-w-3xl">
+
             {/* Avatar */}
-            <div className="p-8 rounded-2xl bg-slate-100 dark:bg-[#161b22]">
+            <div className="p-8 rounded-2xl bg-[var(--bg-card)]">
               <h2 className="text-xl font-bold mb-6">
                 Profile Picture
               </h2>
@@ -246,7 +245,7 @@ const SettingsPage = () => {
             </div>
 
             {/* Form */}
-            <div className="p-8 rounded-2xl bg-slate-100 dark:bg-[#161b22] space-y-5">
+            <div className="p-8 rounded-2xl bg-[var(--bg-card)] space-y-5">
               <input
                 type="text"
                 placeholder="Full Name"
@@ -257,7 +256,7 @@ const SettingsPage = () => {
                     fullName: e.target.value
                   })
                 }
-                className="w-full p-4 rounded-xl bg-white dark:bg-[#0b0e11]"
+                className="w-full p-4 rounded-xl bg-[var(--bg-secondary)]"
               />
 
               <input
@@ -270,7 +269,7 @@ const SettingsPage = () => {
                     email: e.target.value
                   })
                 }
-                className="w-full p-4 rounded-xl bg-white dark:bg-[#0b0e11]"
+                className="w-full p-4 rounded-xl bg-[var(--bg-secondary)]"
               />
 
               <textarea
@@ -283,7 +282,7 @@ const SettingsPage = () => {
                     bio: e.target.value
                   })
                 }
-                className="w-full p-4 rounded-xl bg-white dark:bg-[#0b0e11]"
+                className="w-full p-4 rounded-xl bg-[var(--bg-secondary)]"
               />
 
               <button
@@ -295,13 +294,14 @@ const SettingsPage = () => {
             </div>
           </div>
         ) : (
-          <div className="max-w-2xl p-8 rounded-2xl bg-slate-100 dark:bg-[#161b22]">
+          <div className="max-w-2xl p-8 rounded-2xl bg-[var(--bg-card)]">
             <div className="flex justify-between items-center">
               <div>
                 <p className="font-bold text-xl">
                   {isDarkMode ? 'Dark Mode' : 'Light Mode'}
                 </p>
-                <p className="text-slate-500 text-sm">
+
+                <p className="text-[var(--text-secondary)] text-sm">
                   Toggle application theme
                 </p>
               </div>
