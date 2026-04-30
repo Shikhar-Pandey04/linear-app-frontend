@@ -1,10 +1,10 @@
 import React from 'react';
 import { Target, Zap, CheckCircle2 } from 'lucide-react';
 
-// --- Status Constants (Best Practice) ---
+// --- Status Constants (Fixed) ---
 const STATUS = {
   TODO: "todo",
-  IN_PROGRESS: "in progress",
+  IN_PROGRESS: "in-progress",   // ✅ fixed
   DONE: "done"
 };
 
@@ -35,14 +35,20 @@ const StatCard = ({ title, value, description, icon: Icon, colorClass, borderCla
 // --- Main Component ---
 const Analytics = ({ issues }) => {
 
+  // 🔍 Normalize status (extra safety)
+  const normalizeStatus = (status) => {
+    if (!status) return "";
+    return status.toLowerCase().replace(" ", "-");
+  };
+
   const totalTasks = issues.length;
 
   const inProgressTasks = issues.filter(
-    (i) => i.status === STATUS.IN_PROGRESS
+    (i) => normalizeStatus(i.status) === STATUS.IN_PROGRESS
   ).length;
 
   const completedTasks = issues.filter(
-    (i) => i.status === STATUS.DONE
+    (i) => normalizeStatus(i.status) === STATUS.DONE
   ).length;
 
   const stats = [

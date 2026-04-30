@@ -18,11 +18,18 @@ const KanbanBoard = ({ issues: propIssues, onRefresh, onEdit, onDelete }) => {
   const [localIssues, setLocalIssues] = useState(propIssues || []);
   const [activeIssue, setActiveIssue] = useState(null);
 
+  // ✅ STATUS COLUMNS
   const COLUMNS = [
     { id: "todo", title: "TODO" },
     { id: "in-progress", title: "IN PROGRESS" },
     { id: "done", title: "DONE" }
   ];
+
+  // ✅ Normalize function (IMPORTANT)
+  const normalizeStatus = (status) => {
+    if (!status) return "";
+    return status.toLowerCase().replace(" ", "-");
+  };
 
   useEffect(() => {
     setLocalIssues(propIssues || []);
@@ -40,7 +47,7 @@ const KanbanBoard = ({ issues: propIssues, onRefresh, onEdit, onDelete }) => {
     if (column) return column.id;
 
     const issue = localIssues.find((item) => item._id === id);
-    return issue ? issue.status : null;
+    return issue ? normalizeStatus(issue.status) : null;
   };
 
   const handleDragStart = (event) => {
@@ -64,20 +71,26 @@ const KanbanBoard = ({ issues: propIssues, onRefresh, onEdit, onDelete }) => {
     if (!activeContainer || !overContainer) return;
     if (activeContainer === overContainer) return;
 
+    // ✅ Local update (instant UI update)
     const updatedIssues = localIssues.map((issue) =>
       issue._id === activeId
-        ? { ...issue, status: overContainer }
+        ? { ...issue, status: normalizeStatus(overContainer) }
         : issue
     );
 
     setLocalIssues(updatedIssues);
 
     try {
+      // ✅ Backend update
       await API.patch(`/issues/status/${activeId}`, {
-        status: overContainer
+        status: normalizeStatus(overContainer)
       });
 
-      if (onRefresh) onRefresh();
+      // ✅ Refresh parent (dashboard sync)
+      if (onRefresh) {
+        await onRefresh();
+      }
+
     } catch (error) {
       console.error("Status update failed:", error);
       setLocalIssues(propIssues || []);
@@ -113,7 +126,7 @@ const KanbanBoard = ({ issues: propIssues, onRefresh, onEdit, onDelete }) => {
               title={column.title}
               issues={
                 localIssues?.filter(
-                  (issue) => issue.status === column.id
+                  (issue) => normalizeStatus(issue.status) === column.id
                 ) || []
               }
               onEdit={onEdit}
