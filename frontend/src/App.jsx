@@ -1,18 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-// Pages Import
+// Pages
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
-import Overview from './pages/Overview';     // Dashboard (Stats) ke liye
-import MyTasks from './pages/MyTasks';       // My Tasks (Kanban) ke liye
-import Schedule from './pages/Schedule';     // Schedule (Coming Soon) ke liye
+import Overview from './pages/Overview';
+import MyTasks from './pages/MyTasks';
+import Schedule from './pages/Schedule';
 import SupportPage from './pages/SupportPage';
 import SettingsPage from './pages/SettingsPage';
-
-// Sidebar ko har protected page par dikhane ke liye Layout (Optional but recommended)
-// Agar tere pages ke andar pehle se Sidebar hai, toh iski zaroorat nahi padegi.
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -23,70 +20,41 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
+
+  // ✅ GLOBAL THEME LOAD ON START (IMPORTANT 🔥)
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    const root = document.documentElement;
+
+    if (savedTheme === 'light') {
+      root.classList.add('light-mode');
+    } else {
+      root.classList.remove('light-mode');
+    }
+  }, []);
+
   return (
     <Router>
-      <div className="bg-[#0b0e11] min-h-screen selection:bg-indigo-500/30">
+      {/* ✅ FIXED GLOBAL BACKGROUND */}
+      <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] transition-all duration-300 selection:bg-indigo-500/30">
+        
         <Routes>
-          {/* --- Public Routes --- */}
+          {/* Public */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
 
-          {/* --- Protected Routes (Login ke baad) --- */}
-          
-          {/* 1. Dashboard / Overview (Sirf Stats dikhayega) */}
-          <Route 
-            path="/dashboard" 
-            element={
-              <ProtectedRoute>
-                <Overview />
-              </ProtectedRoute>
-            } 
-          />
+          {/* Protected */}
+          <Route path="/dashboard" element={<ProtectedRoute><Overview /></ProtectedRoute>} />
+          <Route path="/my-tasks" element={<ProtectedRoute><MyTasks /></ProtectedRoute>} />
+          <Route path="/schedule" element={<ProtectedRoute><Schedule /></ProtectedRoute>} />
+          <Route path="/support" element={<ProtectedRoute><SupportPage /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
 
-          {/* 2. My Tasks (Sirf Kanban Board dikhayega) */}
-          <Route 
-            path="/my-tasks" 
-            element={
-              <ProtectedRoute>
-                <MyTasks />
-              </ProtectedRoute>
-            } 
-          />
-
-          {/* 3. Schedule (Coming Soon dikhayega) */}
-          <Route 
-            path="/schedule" 
-            element={
-              <ProtectedRoute>
-                <Schedule />
-              </ProtectedRoute>
-            } 
-          />
-
-          {/* 4. Support Page */}
-          <Route 
-            path="/support" 
-            element={
-              <ProtectedRoute>
-                <SupportPage />
-              </ProtectedRoute>
-            } 
-          />
-
-          {/* 5. Settings Page */}
-          <Route 
-            path="/settings" 
-            element={
-              <ProtectedRoute>
-                <SettingsPage />
-              </ProtectedRoute>
-            } 
-          />
-
-          {/* Wildcard Route */}
+          {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+
       </div>
     </Router>
   );

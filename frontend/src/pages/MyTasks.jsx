@@ -11,7 +11,6 @@ const MyTasks = () => {
   const [editingIssue, setEditingIssue] = useState(null); 
   const [loading, setLoading] = useState(true);
 
-  // --- 1. Sirf Issues Fetch Karo (No Projects!) ---
   const fetchIssues = async () => {
     setLoading(true);
     try {
@@ -50,14 +49,20 @@ const MyTasks = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0b0e11] text-slate-200">
+    <div className="flex min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
       <Sidebar />
 
       <main className="flex-1 ml-64 p-10 pt-24">
         <div className="flex justify-between items-center mb-10">
+          
           <div>
-            <h1 className="text-5xl font-black text-white tracking-tighter mb-1">My Tasks</h1>
-            <p className="text-slate-500 font-medium text-sm tracking-wide">Manage your active issues</p>
+            <h1 className="text-5xl font-black tracking-tighter mb-1">
+              My Tasks
+            </h1>
+
+            <p className="text-[var(--text-secondary)] font-medium text-sm tracking-wide">
+              Manage your active issues
+            </p>
           </div>
           
           <button 
@@ -73,7 +78,7 @@ const MyTasks = () => {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center h-64 text-slate-500">
+          <div className="flex items-center justify-center h-64 text-[var(--text-secondary)]">
             <div className="flex flex-col items-center gap-3">
                 <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
                 <span>Fetching tasks...</span>
@@ -90,7 +95,6 @@ const MyTasks = () => {
           </div>
         )}
 
-        {/* --- Modal mein projectId bhejne ki zarurat nahi hai --- */}
         <CreateIssueModal 
           isOpen={isModalOpen} 
           onClose={handleCloseModal} 
