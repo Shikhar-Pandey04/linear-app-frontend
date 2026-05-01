@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import Footer from "../components/Footer"; // 👈 Footer import
+import Footer from "../components/Footer";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -20,9 +20,9 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden relative font-sans flex flex-col">
 
-      {/* BACKGROUND */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_35%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_left,rgba(80,80,255,0.08),transparent_30%)]" />
+      {/* ✅ FIX 1: pointer-events-none add */}
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_35%)]" />
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_left,rgba(80,80,255,0.08),transparent_30%)]" />
 
       {/* NAVBAR */}
       <nav className="max-w-[1400px] mx-auto px-8 py-6 relative z-20">
@@ -35,8 +35,8 @@ const LandingPage = () => {
       </nav>
 
       {/* MAIN CONTENT */}
-      <div className="flex-grow">
-        <section className="max-w-[1400px] mx-auto px-8 pt-14 relative z-10">
+      <div className="flex-grow relative z-10">
+        <section className="max-w-[1400px] mx-auto px-8 pt-14">
 
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
@@ -55,7 +55,6 @@ const LandingPage = () => {
             Streamline issues, projects, and product roadmaps.
           </p>
 
-          {/* BUTTON */}
           <button
             onClick={() => navigate("/login")}
             className="mt-10 px-5 py-3 rounded-xl bg-white text-black font-medium text-sm hover:bg-zinc-200 transition"
@@ -63,7 +62,6 @@ const LandingPage = () => {
             Start building
           </button>
 
-          {/* MOCKUP */}
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             animate={{ opacity: 1, y: 0 }}
@@ -74,7 +72,6 @@ const LandingPage = () => {
 
               <div className="grid grid-cols-[220px_1fr_1fr] min-h-[520px]">
 
-                {/* SIDEBAR */}
                 <div className="border-r border-white/5 p-5 text-sm text-zinc-500 space-y-4">
                   <p>🏠 Inbox</p>
                   <p className="text-white">📌 My Issues</p>
@@ -92,7 +89,6 @@ const LandingPage = () => {
                   </div>
                 </div>
 
-                {/* CENTER */}
                 <div className="border-r border-white/5 p-6">
                   <p className="text-white text-sm mb-5 font-medium">
                     My Issues
@@ -111,7 +107,6 @@ const LandingPage = () => {
                   </div>
                 </div>
 
-                {/* RIGHT */}
                 <div className="p-6">
                   <p className="text-white font-medium mb-5">
                     Filter issues by team
@@ -136,8 +131,10 @@ const LandingPage = () => {
         </section>
       </div>
 
-      {/* 👇 FOOTER (ONLY HERE) */}
-      <Footer />
+      {/* ✅ FIX 2: Footer above everything */}
+      <div className="relative z-50">
+        <Footer />
+      </div>
 
     </div>
   );
