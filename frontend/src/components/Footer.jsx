@@ -1,5 +1,5 @@
 import React from "react";
-import { Github, Linkedin } from "lucide-react";
+import { Github, LinkedinIcon } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -74,7 +74,7 @@ const Footer = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Linkedin className="w-5 h-5 hover:text-white cursor-pointer" />
+              <LinkedinIcon className="w-5 h-5 hover:text-white cursor-pointer" />
             </a>
 
           </div>
