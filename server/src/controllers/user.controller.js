@@ -2,39 +2,53 @@ import { User } from "../models/User.model.js";
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 
-// --- 🚀 NEW: UPLOAD AVATAR (Cloudinary Logic) ---
+// --- 🚀 UPLOAD AVATAR ---
 const uploadAvatar = async (req, res) => {
     try {
-        // 1. Check karo file aayi hai ya nahi (Multer req.file mein deta hai)
         if (!req.file) {
-            return res.status(400).json({ success: false, message: "No image file provided" });
+            return res.status(400).json({
+                success: false,
+                message: "No image file provided"
+            });
         }
 
-        // 2. Cloudinary par upload karo
+        // Cloudinary upload
         const result = await cloudinary.uploader.upload(req.file.path, {
-            folder: "avatars", // Cloudinary mein 'avatars' folder ban jayega
+            folder: "avatars",
             resource_type: "image",
         });
 
-        // 3. Local temp file ko delete karo (Zaruri hai!)
+        // Local temp file delete
         if (fs.existsSync(req.file.path)) {
             fs.unlinkSync(req.file.path);
         }
 
-        // 4. Client ko Cloudinary ka Secure URL bhej do
+        // 🔥 Save avatar in DB
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user._id,
+            {
+                $set: {
+                    avatar: result.secure_url
+                }
+            },
+            { new: true }
+        ).select("-password");
+
         return res.status(200).json({
             success: true,
-            data: { avatar: result.secure_url },
-            message: "Avatar uploaded to cloud successfully! 📸"
+            data: updatedUser,
+            message: "Avatar uploaded successfully! 📸"
         });
 
     } catch (error) {
-        // Agar fail ho jaye toh bhi local file delete karni hai
         if (req.file && fs.existsSync(req.file.path)) {
             fs.unlinkSync(req.file.path);
         }
-        console.error("Cloudinary Error:", error);
-        return res.status(500).json({ success: false, message: "Failed to upload to cloud" });
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 };
 
@@ -44,12 +58,21 @@ const registerUser = async (req, res) => {
         const { username, email, fullName, password } = req.body;
 
         if ([username, email, fullName, password].some((field) => field?.trim() === "")) {
-            return res.status(400).json({ message: "All fields are required" });
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required"
+            });
         }
 
-        const existedUser = await User.findOne({ $or: [{ username }, { email }] });
+        const existedUser = await User.findOne({
+            $or: [{ username }, { email }]
+        });
+
         if (existedUser) {
-            return res.status(409).json({ message: "User with email or username already exists" });
+            return res.status(409).json({
+                success: false,
+                message: "User with email or username already exists"
+            });
         }
 
         const user = await User.create({
@@ -60,9 +83,6 @@ const registerUser = async (req, res) => {
         });
 
         const createdUser = await User.findById(user._id).select("-password");
-        if (!createdUser) {
-            return res.status(500).json({ message: "Registration failed on server" });
-        }
 
         return res.status(201).json({
             success: true,
@@ -71,7 +91,10 @@ const registerUser = async (req, res) => {
         });
 
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 };
 
@@ -81,25 +104,42 @@ const loginUser = async (req, res) => {
         const { email, password } = req.body;
 
         if (!email || !password) {
-            return res.status(400).json({ message: "Email and password are required" });
+            return res.status(400).json({
+                success: false,
+                message: "Email and password are required"
+            });
         }
 
         const user = await User.findOne({ email });
+
         if (!user) {
-            return res.status(404).json({ message: "User does not exist" });
+            return res.status(404).json({
+                success: false,
+                message: "User does not exist"
+            });
         }
 
         const isPasswordValid = await user.isPasswordCorrect(password);
+
         if (!isPasswordValid) {
-            return res.status(401).json({ message: "Invalid credentials" });
+            return res.status(401).json({
+                success: false,
+                message: "Invalid credentials"
+            });
         }
 
         const accessToken = user.generateAccessToken();
+
         const loggedInUser = await User.findById(user._id).select("-password");
 
-        const options = { httpOnly: true, secure: true };
+        const options = {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        };
 
-        return res.status(200)
+        return res
+            .status(200)
             .cookie("accessToken", accessToken, options)
             .json({
                 success: true,
@@ -109,23 +149,36 @@ const loginUser = async (req, res) => {
             });
 
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 };
 
-// --- UPDATE USER ACCOUNT ---
+// --- UPDATE ACCOUNT ---
 const updateAccount = async (req, res) => {
     try {
         const { fullName, email, bio, avatar } = req.body;
         const userId = req.user._id;
 
         if (!fullName || !email) {
-            return res.status(400).json({ message: "Name and email are required" });
+            return res.status(400).json({
+                success: false,
+                message: "Name and email are required"
+            });
         }
 
-        const existingUser = await User.findOne({ email, _id: { $ne: userId } });
+        const existingUser = await User.findOne({
+            email,
+            _id: { $ne: userId }
+        });
+
         if (existingUser) {
-            return res.status(409).json({ message: "Email already in use" });
+            return res.status(409).json({
+                success: false,
+                message: "Email already in use"
+            });
         }
 
         const updatedUser = await User.findByIdAndUpdate(
@@ -135,7 +188,7 @@ const updateAccount = async (req, res) => {
                     fullName,
                     email,
                     bio: bio || "",
-                    avatar: avatar || "" // Frontend se aaya naya Cloudinary URL yahan save hoga
+                    avatar: avatar || ""
                 }
             },
             { new: true }
@@ -144,11 +197,14 @@ const updateAccount = async (req, res) => {
         return res.status(200).json({
             success: true,
             data: updatedUser,
-            message: "Account updated! 🎉"
+            message: "Account updated successfully! 🎉"
         });
 
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 };
 
@@ -156,16 +212,32 @@ const updateAccount = async (req, res) => {
 const getCurrentUser = async (req, res) => {
     try {
         const user = await User.findById(req.user._id).select("-password");
-        if (!user) return res.status(404).json({ message: "User not found" });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
 
         return res.status(200).json({
             success: true,
             data: user,
-            message: "User fetched"
+            message: "User fetched successfully"
         });
+
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 };
 
-export { registerUser, loginUser, updateAccount, getCurrentUser, uploadAvatar };
+export {
+    registerUser,
+    loginUser,
+    updateAccount,
+    getCurrentUser,
+    uploadAvatar
+};
