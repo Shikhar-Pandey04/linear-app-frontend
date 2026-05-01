@@ -1,5 +1,4 @@
 import React from "react";
-import { Github } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -62,17 +61,19 @@ const Footer = () => {
               href="https://github.com/Shikhar-Pandey04"
               target="_blank"
               rel="noopener noreferrer"
+              className="hover:text-white text-xl"
             >
-              <Github className="w-5 h-5 hover:text-white cursor-pointer" />
+              🐙
             </a>
 
-            {/* LinkedIn (emoji fallback) */}
+            {/* LinkedIn */}
             <a
               href="https://www.linkedin.com/in/shikhar-pandey-0234b42aa/"
               target="_blank"
               rel="noopener noreferrer"
+              className="hover:text-white text-xl"
             >
-              <span className="text-lg hover:text-white cursor-pointer">🔗</span>
+              🔗
             </a>
 
           </div>
