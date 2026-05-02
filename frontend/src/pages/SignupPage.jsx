@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { User, Mail, Lock, Eye, EyeOff, Hexagon } from "lucide-react";
@@ -7,7 +7,6 @@ import API from "../api/axios";
 const SignupPage = () => {
   const navigate = useNavigate();
 
-  // Ensuring state is strictly empty
   const [formData, setFormData] = useState({
     fullName: "",
     username: "",
@@ -37,47 +36,53 @@ const SignupPage = () => {
         navigate("/login");
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Signup fail ho gaya, details check karo!");
+      setError(
+        err.response?.data?.message || "Signup fail ho gaya, details check karo!"
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-black relative flex items-center justify-center px-4 overflow-hidden">
-      
-      {/* BACKGROUND GLOW */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[950px] h-[500px] bg-blue-700/20 blur-[150px] rounded-full" />
+    <div className="min-h-screen bg-[#03060f] relative flex items-center justify-center px-4 overflow-hidden">
+
+      {/* 🔥 SAME LOGIN GLOW */}
+      <div className="absolute w-[600px] h-[600px] bg-blue-600/20 blur-[140px] rounded-full top-[-120px] left-[-120px]" />
+      <div className="absolute w-[500px] h-[500px] bg-indigo-500/20 blur-[120px] rounded-full bottom-[-120px] right-[-120px]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_35%)]" />
 
-      {/* CARD */}
+      {/* 🧊 CARD */}
       <motion.div
         initial={{ opacity: 0, y: 35 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative z-10 w-full max-w-[540px] rounded-[30px] border border-white/10 bg-white/[0.03] backdrop-blur-xl px-8 py-10 shadow-[0_0_70px_rgba(37,99,235,0.08)]"
+        className="relative z-10 w-full max-w-[440px] rounded-[28px] border border-white/10 
+        bg-white/[0.04] backdrop-blur-2xl px-8 py-10 
+        shadow-[0_0_80px_rgba(37,99,235,0.15)]"
       >
-        <div className="w-16 h-16 rounded-2xl bg-blue-600/15 flex items-center justify-center mx-auto mb-6 border border-white/10">
-          <Hexagon className="text-blue-500" fill="currentColor" size={28} />
+        {/* ICON */}
+        <div className="w-14 h-14 rounded-2xl bg-blue-600/15 flex items-center justify-center mx-auto mb-6 border border-white/10">
+          <Hexagon className="text-blue-500" fill="currentColor" size={24} />
         </div>
 
-        <h1 className="text-white text-5xl font-semibold text-center tracking-tight">Create Account</h1>
-        <p className="text-zinc-400 text-center text-sm mt-4 leading-6 max-w-sm mx-auto">
+        {/* TITLE */}
+        <h1 className="text-white text-4xl font-semibold text-center tracking-tight">
+          Create Account
+        </h1>
+
+        <p className="text-zinc-400 text-center text-sm mt-4 leading-6">
           Join the future of product building and create your workspace.
         </p>
 
+        {/* ERROR */}
         {error && (
           <div className="mt-6 bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-3 rounded-xl text-center">
             {error}
           </div>
         )}
 
-        {/* FORM - Added autoComplete="off" */}
         <form onSubmit={handleSignup} className="mt-8 space-y-4" autoComplete="off">
-          
-          {/* TRICK THE BROWSER: Hidden inputs to "catch" the autofill */}
-          <input type="text" style={{display:'none'}} name="fake_user" />
-          <input type="password" style={{display:'none'}} name="fake_pass" />
 
           {/* FULL NAME */}
           <div className="relative">
@@ -86,27 +91,28 @@ const SignupPage = () => {
               name="fullName"
               type="text"
               required
-              autoComplete="off"
               placeholder="Full name"
               value={formData.fullName}
               onChange={handleChange}
-              className="w-full h-14 pl-12 pr-4 rounded-full bg-black/40 border border-white/10 text-white placeholder:text-zinc-600 outline-none focus:border-blue-500 transition"
+              className="w-full h-14 pl-12 rounded-full bg-[#0b1220] border border-white/10 
+              text-white placeholder:text-zinc-500 outline-none 
+              focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40"
             />
           </div>
 
-          {/* USERNAME - Unique name to prevent 'hard' from appearing */}
+          {/* USERNAME */}
           <div className="relative">
             <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
             <input
               name="username"
               type="text"
-              id="signup_username_unique" // Unique ID
               required
-              autoComplete="off"           // Strict off
               placeholder="Username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full h-14 pl-12 pr-4 rounded-full bg-black/40 border border-white/10 text-white placeholder:text-zinc-600 outline-none focus:border-blue-500 transition"
+              className="w-full h-14 pl-12 rounded-full bg-[#0b1220] border border-white/10 
+              text-white placeholder:text-zinc-500 outline-none 
+              focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40"
             />
           </div>
 
@@ -117,11 +123,12 @@ const SignupPage = () => {
               name="email"
               type="email"
               required
-              autoComplete="off"
               placeholder="Email address"
               value={formData.email}
               onChange={handleChange}
-              className="w-full h-14 pl-12 pr-4 rounded-full bg-black/40 border border-white/10 text-white placeholder:text-zinc-600 outline-none focus:border-blue-500 transition"
+              className="w-full h-14 pl-12 rounded-full bg-[#0b1220] border border-white/10 
+              text-white placeholder:text-zinc-500 outline-none 
+              focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40"
             />
           </div>
 
@@ -132,11 +139,12 @@ const SignupPage = () => {
               name="password"
               type={showPass ? "text" : "password"}
               required
-              autoComplete="new-password" // Prevents filling old passwords
               placeholder="Password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full h-14 pl-12 pr-12 rounded-full bg-black/40 border border-white/10 text-white placeholder:text-zinc-600 outline-none focus:border-blue-500 transition"
+              className="w-full h-14 pl-12 pr-12 rounded-full bg-[#0b1220] border border-white/10 
+              text-white placeholder:text-zinc-500 outline-none 
+              focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40"
             />
             <button
               type="button"
@@ -147,18 +155,22 @@ const SignupPage = () => {
             </button>
           </div>
 
+          {/* 🔥 BUTTON FIXED (LOGIN JESA) */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-14 rounded-full bg-gradient-to-r from-blue-600 to-indigo-500 hover:opacity-90 text-white font-bold transition disabled:opacity-50 mt-2 shadow-lg shadow-blue-500/20"
+            className="w-full h-14 rounded-full bg-white/10 hover:bg-white/20 
+            text-white font-semibold transition disabled:opacity-50 
+            shadow-[0_0_20px_rgba(255,255,255,0.05)]"
           >
             {loading ? "Creating..." : "Create Account"}
           </button>
         </form>
 
-        <p className="text-center text-zinc-500 text-sm mt-7">
+        {/* FOOTER */}
+        <p className="text-center text-zinc-500 text-sm mt-6">
           Already a member?{" "}
-          <Link to="/login" className="text-blue-500 font-bold hover:text-blue-400 transition-colors">
+          <Link to="/login" className="text-blue-500 font-semibold hover:text-blue-400">
             Log in
           </Link>
         </p>
