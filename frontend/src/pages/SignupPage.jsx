@@ -36,34 +36,39 @@ const SignupPage = () => {
         navigate("/login");
       }
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Signup fail ho gaya, details check karo!"
-      );
+      setError(err.response?.data?.message || "Signup failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#03060f] relative flex items-center justify-center px-4 overflow-hidden">
+    <div className="min-h-screen bg-black relative flex items-center justify-center px-4 overflow-hidden">
 
-      {/* 🔥 SAME LOGIN GLOW */}
-      <div className="absolute w-[600px] h-[600px] bg-blue-600/20 blur-[140px] rounded-full top-[-120px] left-[-120px]" />
-      <div className="absolute w-[500px] h-[500px] bg-indigo-500/20 blur-[120px] rounded-full bottom-[-120px] right-[-120px]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_35%)]" />
+      {/* 🔥 SAME AS LOGIN (NO BLUE) */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] 
+      bg-white/10 blur-[120px] rounded-full" />
+
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] 
+      bg-black blur-[120px]" />
+
+      <div className="absolute inset-0 
+      bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04),transparent_60%)]" />
 
       {/* 🧊 CARD */}
       <motion.div
         initial={{ opacity: 0, y: 35 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative z-10 w-full max-w-[440px] rounded-[28px] border border-white/10 
-        bg-white/[0.04] backdrop-blur-2xl px-8 py-10 
-        shadow-[0_0_80px_rgba(37,99,235,0.15)]"
+        className="relative z-10 w-full max-w-[440px] rounded-[28px] 
+        border border-white/10 
+        bg-white/[0.04] backdrop-blur-xl 
+        px-8 py-10 
+        shadow-[0_0_60px_rgba(0,0,0,0.6)]"
       >
         {/* ICON */}
-        <div className="w-14 h-14 rounded-2xl bg-blue-600/15 flex items-center justify-center mx-auto mb-6 border border-white/10">
-          <Hexagon className="text-blue-500" fill="currentColor" size={24} />
+        <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-6 border border-white/10">
+          <Hexagon className="text-white/80" size={24} />
         </div>
 
         {/* TITLE */}
@@ -72,7 +77,7 @@ const SignupPage = () => {
         </h1>
 
         <p className="text-zinc-400 text-center text-sm mt-4 leading-6">
-          Join the future of product building and create your workspace.
+          Create your account and start managing your work.
         </p>
 
         {/* ERROR */}
@@ -82,7 +87,7 @@ const SignupPage = () => {
           </div>
         )}
 
-        <form onSubmit={handleSignup} className="mt-8 space-y-4" autoComplete="off">
+        <form onSubmit={handleSignup} className="mt-8 space-y-4">
 
           {/* FULL NAME */}
           <div className="relative">
@@ -94,9 +99,10 @@ const SignupPage = () => {
               placeholder="Full name"
               value={formData.fullName}
               onChange={handleChange}
-              className="w-full h-14 pl-12 rounded-full bg-[#0b1220] border border-white/10 
-              text-white placeholder:text-zinc-500 outline-none 
-              focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40"
+              className="w-full h-14 pl-12 rounded-full 
+              bg-black/40 border border-white/10 
+              text-white placeholder:text-zinc-600 
+              outline-none focus:border-white/20 transition"
             />
           </div>
 
@@ -110,9 +116,10 @@ const SignupPage = () => {
               placeholder="Username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full h-14 pl-12 rounded-full bg-[#0b1220] border border-white/10 
-              text-white placeholder:text-zinc-500 outline-none 
-              focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40"
+              className="w-full h-14 pl-12 rounded-full 
+              bg-black/40 border border-white/10 
+              text-white placeholder:text-zinc-600 
+              outline-none focus:border-white/20 transition"
             />
           </div>
 
@@ -126,9 +133,10 @@ const SignupPage = () => {
               placeholder="Email address"
               value={formData.email}
               onChange={handleChange}
-              className="w-full h-14 pl-12 rounded-full bg-[#0b1220] border border-white/10 
-              text-white placeholder:text-zinc-500 outline-none 
-              focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40"
+              className="w-full h-14 pl-12 rounded-full 
+              bg-black/40 border border-white/10 
+              text-white placeholder:text-zinc-600 
+              outline-none focus:border-white/20 transition"
             />
           </div>
 
@@ -142,26 +150,29 @@ const SignupPage = () => {
               placeholder="Password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full h-14 pl-12 pr-12 rounded-full bg-[#0b1220] border border-white/10 
-              text-white placeholder:text-zinc-500 outline-none 
-              focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40"
+              className="w-full h-14 pl-12 pr-12 rounded-full 
+              bg-black/40 border border-white/10 
+              text-white placeholder:text-zinc-600 
+              outline-none focus:border-white/20 transition"
             />
             <button
               type="button"
               onClick={() => setShowPass(!showPass)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-500"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white"
             >
               {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
 
-          {/* 🔥 BUTTON FIXED (LOGIN JESA) */}
+          {/* BUTTON */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-14 rounded-full bg-white/10 hover:bg-white/20 
-            text-white font-semibold transition disabled:opacity-50 
-            shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+            className="w-full h-14 rounded-full 
+            bg-white/10 hover:bg-white/20 
+            text-white font-semibold 
+            transition disabled:opacity-50 
+            shadow-[0_4px_20px_rgba(0,0,0,0.4)]"
           >
             {loading ? "Creating..." : "Create Account"}
           </button>
