@@ -29,30 +29,37 @@ const LoginPage = () => {
         navigate("/dashboard");
       }
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Invalid credentials, bhai!"
-      );
+      setError(err.response?.data?.message || "Invalid credentials");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#03060f] relative flex items-center justify-center px-4 overflow-hidden">
+    <div className="min-h-screen bg-black relative flex items-center justify-center px-4 overflow-hidden">
 
-      {/* 🔥 BACKGROUND GLOW (premium wala) */}
-      <div className="absolute w-[600px] h-[600px] bg-blue-600/20 blur-[140px] rounded-full top-[-120px] left-[-120px]" />
-      <div className="absolute w-[500px] h-[500px] bg-indigo-500/20 blur-[120px] rounded-full bottom-[-120px] right-[-120px]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_35%)]" />
+      {/* 🔥 TOP SOFT WHITE GLOW (KEY FIX) */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] 
+      bg-white/10 blur-[120px] rounded-full" />
+
+      {/* 🔥 BOTTOM DARK FADE */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] 
+      bg-black blur-[120px]" />
+
+      {/* 🔥 SOFT DEPTH */}
+      <div className="absolute inset-0 
+      bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04),transparent_60%)]" />
 
       {/* 🧊 CARD */}
       <motion.div
         initial={{ opacity: 0, y: 35 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative z-10 w-full max-w-[440px] rounded-[28px] border border-white/10 
-        bg-white/[0.04] backdrop-blur-2xl px-8 py-10 
-        shadow-[0_0_80px_rgba(37,99,235,0.15)]"
+        className="relative z-10 w-full max-w-[440px] rounded-[28px] 
+        border border-white/10 
+        bg-white/[0.04] backdrop-blur-xl 
+        px-8 py-10 
+        shadow-[0_0_60px_rgba(0,0,0,0.6)]"
       >
         {/* TITLE */}
         <h1 className="text-white text-4xl font-semibold text-center tracking-tight">
@@ -60,13 +67,12 @@ const LoginPage = () => {
         </h1>
 
         <p className="text-zinc-400 text-center text-sm mt-4 leading-6 max-w-sm mx-auto">
-          Log in to your account and seamlessly continue managing your
-          projects, ideas, and progress.
+          Log in to your account and continue your work seamlessly.
         </p>
 
         {/* ERROR */}
         {error && (
-          <div className="mt-6 bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-3 rounded-xl text-center font-medium">
+          <div className="mt-6 bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-3 rounded-xl text-center">
             {error}
           </div>
         )}
@@ -79,13 +85,13 @@ const LoginPage = () => {
             <input
               type="email"
               required
-              autoComplete="off"
               placeholder="Enter your email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full h-14 pl-12 pr-4 rounded-full bg-[#0b1220] border border-white/10 
-              text-white placeholder:text-zinc-500 outline-none 
-              focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition"
+              className="w-full h-14 pl-12 pr-4 rounded-full 
+              bg-black/40 border border-white/10 
+              text-white placeholder:text-zinc-600 
+              outline-none focus:border-white/20 transition"
             />
           </div>
 
@@ -95,18 +101,18 @@ const LoginPage = () => {
             <input
               type={showPass ? "text" : "password"}
               required
-              autoComplete="new-password"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full h-14 pl-12 pr-12 rounded-full bg-[#0b1220] border border-white/10 
-              text-white placeholder:text-zinc-500 outline-none 
-              focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 transition"
+              className="w-full h-14 pl-12 pr-12 rounded-full 
+              bg-black/40 border border-white/10 
+              text-white placeholder:text-zinc-600 
+              outline-none focus:border-white/20 transition"
             />
             <button
               type="button"
               onClick={() => setShowPass(!showPass)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-500 hover:text-blue-400"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white"
             >
               {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -116,14 +122,16 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-14 rounded-full bg-white/10 hover:bg-white/20 
-            text-white font-semibold transition disabled:opacity-50 
-            shadow-[0_0_20px_rgba(255,255,255,0.05)] mt-2"
+            className="w-full h-14 rounded-full 
+            bg-white/10 hover:bg-white/20 
+            text-white font-semibold 
+            transition disabled:opacity-50 
+            shadow-[0_4px_20px_rgba(0,0,0,0.4)] mt-2"
           >
             {loading ? "Logging in..." : "Log in"}
           </button>
 
-          {/* SOCIAL (optional but premium feel) */}
+          {/* SOCIAL */}
           <div className="flex gap-3 pt-2">
             <button className="flex-1 py-2 rounded-full bg-white/5 border border-white/10 text-xs text-gray-300 hover:bg-white/10">
               Facebook
