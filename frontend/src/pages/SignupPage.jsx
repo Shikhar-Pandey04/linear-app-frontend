@@ -45,7 +45,7 @@ const SignupPage = () => {
   return (
     <div className="min-h-screen bg-black relative flex items-center justify-center px-4 overflow-hidden">
 
-      {/* BACKGROUND (same as login) */}
+      {/* BACKGROUND */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-white/10 blur-[120px] rounded-full" />
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] bg-black blur-[120px]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04),transparent_60%)]" />
@@ -58,6 +58,7 @@ const SignupPage = () => {
         border border-white/10 bg-white/[0.04] backdrop-blur-xl 
         px-8 py-10 shadow-[0_0_60px_rgba(0,0,0,0.6)]"
       >
+
         {/* ICON */}
         <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-6 border border-white/10">
           <Hexagon className="text-white/80" size={24} />
@@ -77,20 +78,18 @@ const SignupPage = () => {
           </div>
         )}
 
-        {/* 🔥 AUTOFILL FIX */}
         <form onSubmit={handleSignup} className="mt-8 space-y-4" autoComplete="off">
 
-          {/* hidden inputs (chrome ko confuse karne ke liye) */}
-          <input type="text" name="fakeuser" autoComplete="username" style={{ display: "none" }} />
-          <input type="password" name="fakepass" autoComplete="current-password" style={{ display: "none" }} />
+          {/* hidden autofill trap */}
+          <input type="text" name="fakeuser" style={{ display: "none" }} />
+          <input type="password" name="fakepass" style={{ display: "none" }} />
 
           {/* FULL NAME */}
           <div className="relative">
             <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
             <input
-              name="fullName_unique"
+              name="fullName"   // ✅ FIX
               type="text"
-              autoComplete="off"
               required
               placeholder="Full name"
               value={formData.fullName}
@@ -104,9 +103,8 @@ const SignupPage = () => {
           <div className="relative">
             <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
             <input
-              name="username_unique"
+              name="username"   // ✅ FIX
               type="text"
-              autoComplete="off"
               required
               placeholder="Username"
               value={formData.username}
@@ -120,9 +118,8 @@ const SignupPage = () => {
           <div className="relative">
             <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
             <input
-              name="email_unique"
+              name="email"   // ✅ FIX
               type="email"
-              autoComplete="off"
               required
               placeholder="Email address"
               value={formData.email}
@@ -136,7 +133,7 @@ const SignupPage = () => {
           <div className="relative">
             <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
             <input
-              name="password_unique"
+              name="password"   // ✅ FIX
               type={showPass ? "text" : "password"}
               autoComplete="new-password"
               required
@@ -160,8 +157,7 @@ const SignupPage = () => {
             type="submit"
             disabled={loading}
             className="w-full h-14 rounded-full bg-white/10 hover:bg-white/20 
-            text-white font-semibold transition disabled:opacity-50 
-            shadow-[0_4px_20px_rgba(0,0,0,0.4)]"
+            text-white font-semibold transition disabled:opacity-50"
           >
             {loading ? "Creating..." : "Create Account"}
           </button>
