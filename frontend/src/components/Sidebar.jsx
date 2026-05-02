@@ -12,7 +12,6 @@ import {
   LifeBuoy,
   Settings,
   LogOut,
-  Hexagon,
   User,
   ChevronDown
 } from 'lucide-react';
@@ -29,11 +28,7 @@ const NavItem = ({ icon: Icon, label, badge, active = false, onClick }) => (
     }`}
   >
     <div className="flex items-center gap-4">
-      <Icon
-        size={18}
-        strokeWidth={2}
-        className="text-gray-400"
-      />
+      <Icon size={18} strokeWidth={2} className="text-gray-400" />
 
       <span className="text-[14px] font-medium tracking-wide">
         {label}
@@ -89,7 +84,6 @@ const Sidebar = () => {
         {/* Logo */}
         <div className="flex items-center gap-3 mb-10 px-2 mt-4">
           <div className="w-3 h-3 rounded-full bg-green-500"></div>
-
           <span className="text-lg font-semibold text-white">
             World
           </span>
@@ -116,8 +110,18 @@ const Sidebar = () => {
             onClick={() => navigate('/my-tasks')}
           />
 
-          <NavItem icon={Calendar} label="Schedule" />
-          <NavItem icon={BarChart3} label="Reports" />
+          {/* 🔥 FIXED SCHEDULE */}
+          <NavItem
+            icon={Calendar}
+            label="Schedule"
+            active={currentPath === '/schedule'}
+            onClick={() => navigate('/schedule')}
+          />
+
+          <NavItem
+            icon={BarChart3}
+            label="Reports"
+          />
         </div>
 
         {/* Records */}
