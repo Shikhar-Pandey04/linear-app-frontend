@@ -49,7 +49,7 @@ const MyTasks = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
+    <div className="flex min-h-screen bg-[#0d1117] text-white">
       <Sidebar />
 
       <main className="flex-1 ml-64 p-10 pt-24">
@@ -60,7 +60,7 @@ const MyTasks = () => {
               My Tasks
             </h1>
 
-            <p className="text-[var(--text-secondary)] font-medium text-sm tracking-wide">
+            <p className="text-gray-400 font-medium text-sm tracking-wide">
               Manage your active issues
             </p>
           </div>
@@ -70,7 +70,7 @@ const MyTasks = () => {
               setEditingIssue(null); 
               setIsModalOpen(true);
             }}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm"
+            className="flex items-center gap-2 bg-[#238636] hover:bg-[#2ea043] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all"
           >
             <Plus size={16} />
             <span>New Issue</span>
@@ -78,9 +78,9 @@ const MyTasks = () => {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center h-64 text-[var(--text-secondary)]">
+          <div className="flex items-center justify-center h-64 text-gray-400">
             <div className="flex flex-col items-center gap-3">
-                <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-5 h-5 border-2 border-[#238636] border-t-transparent rounded-full animate-spin"></div>
                 <span>Fetching tasks...</span>
             </div>
           </div>

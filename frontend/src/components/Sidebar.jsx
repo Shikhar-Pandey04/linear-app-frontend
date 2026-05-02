@@ -20,32 +20,28 @@ import API from '../api/axios';
 
 const NavItem = ({ icon: Icon, label, badge, active = false, onClick }) => (
   <motion.div
-    whileHover={{ x: 4, backgroundColor: 'rgba(255,255,255,0.05)' }}
+    whileHover={{ x: 3 }}
     onClick={onClick}
-    className={`flex items-center justify-between px-4 py-3 rounded-xl cursor-pointer transition-all mb-2 group ${
+    className={`flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer transition-all mb-1 ${
       active
-        ? 'bg-indigo-600/15 text-indigo-400 border border-indigo-500/20'
-        : 'text-slate-500 hover:text-slate-200'
+        ? 'bg-[#161b22] text-white border border-gray-800'
+        : 'text-gray-400 hover:text-white hover:bg-[#161b22]'
     }`}
   >
     <div className="flex items-center gap-4">
       <Icon
-        size={20}
-        strokeWidth={active ? 2.5 : 2}
-        className={active ? 'text-indigo-500' : 'group-hover:text-slate-400'}
+        size={18}
+        strokeWidth={2}
+        className="text-gray-400"
       />
 
-      <span
-        className={`text-[14px] tracking-wide ${
-          active ? 'font-black' : 'font-bold'
-        }`}
-      >
+      <span className="text-[14px] font-medium tracking-wide">
         {label}
       </span>
     </div>
 
     {badge && (
-      <span className="bg-indigo-600/20 text-indigo-400 text-[11px] font-black px-2 py-0.5 rounded-lg border border-indigo-500/10">
+      <span className="bg-[#238636]/20 text-[#238636] text-[11px] font-semibold px-2 py-0.5 rounded-md border border-[#238636]/20">
         {badge}
       </span>
     )}
@@ -62,7 +58,6 @@ const Sidebar = () => {
   const fetchUser = async () => {
     try {
       const response = await API.get('/users/current-user');
-
       if (response.data.success) {
         setUserData(response.data.data);
       }
@@ -75,7 +70,6 @@ const Sidebar = () => {
     fetchUser();
   }, []);
 
-  // jab settings se avatar update hoke user wapas aaye
   useEffect(() => {
     fetchUser();
   }, [currentPath]);
@@ -88,22 +82,22 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-66 h-screen bg-[#0b0e11] border-r border-slate-800/30 flex flex-col justify-between p-5 fixed left-0 top-0 z-50">
+    <div className="w-64 h-screen bg-[#010409] border-r border-gray-800 flex flex-col justify-between p-5 fixed left-0 top-0 z-50">
+      
       {/* TOP */}
       <div>
-        <div className="flex items-center gap-4 mb-12 px-2 mt-4">
-          <div className="p-2 bg-indigo-600 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.4)]">
-            <Hexagon size={22} className="text-white" fill="white" />
-          </div>
+        {/* Logo */}
+        <div className="flex items-center gap-3 mb-10 px-2 mt-4">
+          <div className="w-3 h-3 rounded-full bg-green-500"></div>
 
-          <span className="text-2xl font-black tracking-tighter text-white italic">
+          <span className="text-lg font-semibold text-white">
             World
           </span>
         </div>
 
         {/* Main Menu */}
-        <div className="mb-10">
-          <p className="text-[11px] font-black text-slate-700 uppercase tracking-[0.3em] mb-5 px-2">
+        <div className="mb-8">
+          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest mb-4 px-2">
             Main Menu
           </p>
 
@@ -127,8 +121,8 @@ const Sidebar = () => {
         </div>
 
         {/* Records */}
-        <div className="mb-10">
-          <p className="text-[11px] font-black text-slate-700 uppercase tracking-[0.3em] mb-5 px-2">
+        <div className="mb-8">
+          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest mb-4 px-2">
             Records
           </p>
 
@@ -139,14 +133,14 @@ const Sidebar = () => {
       </div>
 
       {/* BOTTOM */}
-      <div className="border-t border-slate-800/40 pt-6">
-        {/* Profile Card */}
+      <div className="border-t border-gray-800 pt-6">
+        
+        {/* Profile */}
         <div
           onClick={() => navigate('/settings')}
-          className="flex items-center gap-3 p-3 mb-4 rounded-2xl hover:bg-slate-800/40 transition-all cursor-pointer group border border-transparent hover:border-slate-800/50"
+          className="flex items-center gap-3 p-3 mb-4 rounded-lg hover:bg-[#161b22] transition-all cursor-pointer"
         >
-          {/* Avatar */}
-          <div className="w-10 h-10 rounded-xl overflow-hidden border border-slate-700 bg-slate-900 flex-shrink-0 shadow-lg">
+          <div className="w-9 h-9 rounded-md overflow-hidden border border-gray-700 bg-[#161b22] flex items-center justify-center">
             {userData?.avatar ? (
               <img
                 src={userData.avatar}
@@ -154,27 +148,21 @@ const Sidebar = () => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-slate-500">
-                <User size={20} />
-              </div>
+              <User size={18} className="text-gray-500" />
             )}
           </div>
 
-          {/* Name */}
-          <div className="flex-1 min-w-0">
-            <h4 className="text-[13px] font-black text-white truncate leading-tight">
+          <div className="flex-1">
+            <h4 className="text-[13px] font-medium text-white truncate">
               {userData?.fullName || 'Loading...'}
             </h4>
 
-            <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-0.5">
+            <p className="text-[10px] text-gray-500 uppercase tracking-widest">
               Admin
             </p>
           </div>
 
-          <ChevronDown
-            size={14}
-            className="text-slate-600 group-hover:text-slate-300 transition-colors"
-          />
+          <ChevronDown size={14} className="text-gray-500" />
         </div>
 
         {/* Actions */}
@@ -193,7 +181,7 @@ const Sidebar = () => {
             onClick={() => navigate('/support')}
           />
 
-          <div className="mt-2 pt-2 border-t border-slate-800/30">
+          <div className="mt-2 pt-2 border-t border-gray-800">
             <NavItem
               icon={LogOut}
               label="Logout"
