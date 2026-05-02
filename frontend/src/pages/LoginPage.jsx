@@ -38,15 +38,15 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-black relative flex items-center justify-center px-4 overflow-hidden">
 
-      {/* 🔥 TOP SOFT WHITE GLOW (KEY FIX) */}
+      {/* 🔥 TOP GLOW */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] 
       bg-white/10 blur-[120px] rounded-full" />
 
-      {/* 🔥 BOTTOM DARK FADE */}
+      {/* 🔥 BOTTOM FADE */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] 
       bg-black blur-[120px]" />
 
-      {/* 🔥 SOFT DEPTH */}
+      {/* 🔥 DEPTH */}
       <div className="absolute inset-0 
       bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04),transparent_60%)]" />
 
@@ -61,7 +61,6 @@ const LoginPage = () => {
         px-8 py-10 
         shadow-[0_0_60px_rgba(0,0,0,0.6)]"
       >
-        {/* TITLE */}
         <h1 className="text-white text-4xl font-semibold text-center tracking-tight">
           Log in
         </h1>
@@ -70,20 +69,26 @@ const LoginPage = () => {
           Log in to your account and continue your work seamlessly.
         </p>
 
-        {/* ERROR */}
         {error && (
           <div className="mt-6 bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-3 rounded-xl text-center">
             {error}
           </div>
         )}
 
+        {/* ✅ IMPORTANT FIX HERE */}
         <form onSubmit={handleLogin} className="mt-8 space-y-4" autoComplete="off">
-          
+
+          {/* 🔥 HIDDEN FIELDS (autofill breaker) */}
+          <input type="text" name="fake_user" autoComplete="username" style={{ display: "none" }} />
+          <input type="password" name="fake_pass" autoComplete="current-password" style={{ display: "none" }} />
+
           {/* EMAIL */}
           <div className="relative">
             <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
             <input
               type="email"
+              name="email_unique_123"
+              autoComplete="off"
               required
               placeholder="Enter your email address"
               value={email}
@@ -100,6 +105,8 @@ const LoginPage = () => {
             <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
             <input
               type={showPass ? "text" : "password"}
+              name="password_unique_456"
+              autoComplete="new-password"
               required
               placeholder="Enter your password"
               value={password}
@@ -145,7 +152,6 @@ const LoginPage = () => {
           </div>
         </form>
 
-        {/* SIGNUP */}
         <p className="text-center text-zinc-500 text-sm mt-6">
           Didn’t have an account?{" "}
           <Link to="/signup" className="text-blue-500 font-semibold hover:text-blue-400">
