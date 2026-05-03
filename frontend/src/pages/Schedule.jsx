@@ -19,7 +19,7 @@ const localizer = dateFnsLocalizer({
 const Schedule = () => {
   const [events, setEvents] = useState([]);
 
-  // 🔥 NEW STATES (modal ke liye)
+  // 🔥 MODAL STATES
   const [showModal, setShowModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [title, setTitle] = useState("");
@@ -32,6 +32,7 @@ const Schedule = () => {
       const mappedEvents = (res.data.data || [])
         .filter(issue => issue.dueDate)
         .map(issue => ({
+          id: issue._id, // 🔥 IMPORTANT (for delete)
           title: issue.title,
           start: new Date(issue.dueDate),
           end: new Date(issue.dueDate),
@@ -48,28 +49,39 @@ const Schedule = () => {
     fetchIssues();
   }, []);
 
-  // 🔥 CLICK ON DATE
+  // 🔥 CLICK DATE → OPEN MODAL
   const handleSelect = (slotInfo) => {
     setSelectedDate(slotInfo.start);
     setShowModal(true);
   };
 
-  // 🔥 SAVE NEW EVENT (frontend only)
+  // 🔥 SAVE NEW EVENT (frontend)
   const handleSave = () => {
     if (!title.trim()) return;
 
-    setEvents([
-      ...events,
-      {
-        title,
-        start: selectedDate,
-        end: selectedDate,
-        priority: "LOW",
-      },
-    ]);
+    const newEvent = {
+      id: Date.now(), // unique id
+      title,
+      start: selectedDate,
+      end: selectedDate,
+      priority: "LOW",
+    };
+
+    setEvents(prev => [...prev, newEvent]);
 
     setShowModal(false);
     setTitle("");
+  };
+
+  // 🔥 DELETE EVENT
+  const handleDelete = (eventToDelete) => {
+    const confirmDelete = window.confirm("Delete this event?");
+
+    if (!confirmDelete) return;
+
+    setEvents(prev =>
+      prev.filter(event => event.id !== eventToDelete.id)
+    );
   };
 
   return (
@@ -85,18 +97,21 @@ const Schedule = () => {
         </p>
       </div>
 
-      {/* CALENDAR WRAPPER */}
+      {/* CALENDAR */}
       <div className="h-[85vh] rounded-2xl p-[1px] bg-gradient-to-br from-indigo-500/20 via-transparent to-purple-500/20">
         <div className="h-full w-full bg-[#0b0f14]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-5">
 
           <Calendar
-            selectable   // 🔥 IMPORTANT
+            selectable
             localizer={localizer}
             events={events}
             startAccessor="start"
             endAccessor="end"
             style={{ height: '100%' }}
-            onSelectSlot={handleSelect} // 🔥 CLICK ENABLE
+
+            onSelectSlot={handleSelect}   // ➕ add event
+            onSelectEvent={handleDelete} // ❌ delete event
+
             eventPropGetter={(event) => {
               let bg = '#6366f1';
 
@@ -112,6 +127,7 @@ const Schedule = () => {
                   color: 'white',
                   fontSize: '12px',
                   padding: '3px 6px',
+                  cursor: 'pointer',
                 },
               };
             }}
@@ -120,7 +136,7 @@ const Schedule = () => {
         </div>
       </div>
 
-      {/* 🔥 MODAL */}
+      {/* 🔥 ADD EVENT MODAL */}
       {showModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
           
