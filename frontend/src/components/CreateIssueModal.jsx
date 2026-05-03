@@ -27,26 +27,24 @@ const CreateIssueModal = ({ isOpen, onClose, onSuccess, initialData = null, proj
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.title.trim()) return alert("Title toh dalo bhai!");
+        if (!formData.title.trim()) return alert("Please enter a title!");
         
         setLoading(true);
 
-        // --- PROJECT KI TENSION KHATAM ---
         const payload = {
             title: formData.title.trim(),
             description: formData.description.trim(),
             priority: formData.priority.toLowerCase(),
             status: initialData ? formData.status.toLowerCase() : "todo",
-            project: projectId || null // Agar ID nahi hai toh null bhej do, backend handle kar lega
+            project: projectId || null
         };
         
-        console.log("🚀 Request bhej raha hoon:", payload);
+        console.log("🚀 Sending request:", payload);
 
         try {
             if (initialData) {
                 await API.patch(`/issues/status/${initialData._id}`, payload);
             } else {
-                // Tumhare routes ke hisaab se check kar lena: '/issues/create'
                 await API.post('/issues/create', payload); 
             }
 
@@ -55,7 +53,7 @@ const CreateIssueModal = ({ isOpen, onClose, onSuccess, initialData = null, proj
         } catch (error) {
             const errorMsg = error.response?.data?.message || error.message;
             console.error("❌ Error:", error.response?.data);
-            alert(`Garbad ho gayi: ${errorMsg}`);
+            alert(`Something went wrong: ${errorMsg}`);
         } finally {
             setLoading(false);
         }
@@ -89,6 +87,8 @@ const CreateIssueModal = ({ isOpen, onClose, onSuccess, initialData = null, proj
                             </div>
 
                             <form onSubmit={handleSubmit} className="space-y-6">
+                                
+                                {/* TITLE */}
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Title</label>
                                     <input 
@@ -96,21 +96,23 @@ const CreateIssueModal = ({ isOpen, onClose, onSuccess, initialData = null, proj
                                         className="w-full bg-[#0b0e11] border border-slate-800 p-3.5 rounded-xl text-sm text-slate-200 focus:border-indigo-500 outline-none transition-all"
                                         value={formData.title}
                                         onChange={(e) => setFormData({...formData, title: e.target.value})}
-                                        placeholder="Kiya kaam hai?"
+                                        placeholder="What needs to be done?"
                                         required
                                     />
                                 </div>
 
+                                {/* DESCRIPTION */}
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Description</label>
                                     <textarea 
                                         className="w-full bg-[#0b0e11] border border-slate-800 p-3.5 rounded-xl text-sm text-slate-200 h-28 focus:border-indigo-500 outline-none resize-none transition-all"
                                         value={formData.description}
                                         onChange={(e) => setFormData({...formData, description: e.target.value})}
-                                        placeholder="Thoda vistaar mein batao..."
+                                        placeholder="Describe the task in detail..."
                                     />
                                 </div>
 
+                                {/* PRIORITY */}
                                 <div className="space-y-3">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Priority</label>
                                     <div className="flex gap-3">
@@ -130,6 +132,7 @@ const CreateIssueModal = ({ isOpen, onClose, onSuccess, initialData = null, proj
                                     </div>
                                 </div>
 
+                                {/* ACTIONS */}
                                 <div className="flex justify-end items-center gap-4 mt-8 pt-6 border-t border-slate-800/50">
                                     <button type="button" onClick={onClose} className="text-sm font-bold text-slate-500 hover:text-slate-300">
                                         Cancel
@@ -141,6 +144,7 @@ const CreateIssueModal = ({ isOpen, onClose, onSuccess, initialData = null, proj
                                         {loading ? "Saving..." : (initialData ? "Update" : "Create")}
                                     </button>
                                 </div>
+
                             </form>
                         </div>
                     </motion.div>
