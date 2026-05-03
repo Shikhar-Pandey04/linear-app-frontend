@@ -101,10 +101,10 @@ const Sidebar = () => {
             onClick={() => navigate('/dashboard')}
           />
 
+          {/* ✅ FIX: badge removed */}
           <NavItem
             icon={CheckSquare}
             label="My Tasks"
-            badge="1"
             active={currentPath === '/my-tasks'}
             onClick={() => navigate('/my-tasks')}
           />
@@ -116,7 +116,6 @@ const Sidebar = () => {
             onClick={() => navigate('/schedule')}
           />
 
-          {/* ✅ FIXED REPORTS */}
           <NavItem
             icon={BarChart3}
             label="Reports"
