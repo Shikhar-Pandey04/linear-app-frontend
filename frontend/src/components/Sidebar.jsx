@@ -29,7 +29,6 @@ const NavItem = ({ icon: Icon, label, badge, active = false, onClick }) => (
   >
     <div className="flex items-center gap-4">
       <Icon size={18} strokeWidth={2} className="text-gray-400" />
-
       <span className="text-[14px] font-medium tracking-wide">
         {label}
       </span>
@@ -70,7 +69,7 @@ const Sidebar = () => {
   }, [currentPath]);
 
   const handleLogout = () => {
-    if (window.confirm('Bhai, logout karna hai?')) {
+    if (window.confirm('Do you want to logout?')) {
       localStorage.removeItem('token');
       window.location.href = '/login';
     }
@@ -110,7 +109,6 @@ const Sidebar = () => {
             onClick={() => navigate('/my-tasks')}
           />
 
-          {/* 🔥 FIXED SCHEDULE */}
           <NavItem
             icon={Calendar}
             label="Schedule"
@@ -118,9 +116,12 @@ const Sidebar = () => {
             onClick={() => navigate('/schedule')}
           />
 
+          {/* ✅ FIXED REPORTS */}
           <NavItem
             icon={BarChart3}
             label="Reports"
+            active={currentPath === '/reports'}
+            onClick={() => navigate('/reports')}
           />
         </div>
 
