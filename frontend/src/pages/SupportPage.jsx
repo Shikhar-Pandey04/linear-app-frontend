@@ -83,19 +83,16 @@ const SupportPage = () => {
             Can't find the answer you're looking for? Feel free to reach out.
           </p>
 
-          {/* ✅ FINAL FIX */}
-          <a
-            href="mailto:pandeyshikhar2004@gmail.com?subject=Support Request"
-            className="bg-indigo-600 hover:bg-indigo-700 px-8 py-3 rounded-xl font-bold transition-all inline-block"
-          >
-            Get in touch
-          </a>
+          {/* ❌ BUTTON REMOVED */}
 
           <p className="mt-4 text-sm text-slate-500">
-            or email me directly at{" "}
-            <span className="text-indigo-400 font-medium">
+            Email me directly at{" "}
+            <a
+              href="mailto:pandeyshikhar2004@gmail.com"
+              className="text-indigo-400 font-medium hover:underline"
+            >
               pandeyshikhar2004@gmail.com
-            </span>
+            </a>
           </p>
         </div>
       </div>
