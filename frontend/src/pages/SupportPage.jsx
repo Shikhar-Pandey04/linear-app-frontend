@@ -76,19 +76,19 @@ const SupportPage = () => {
           ))}
         </div>
 
-        {/* ✅ CONTACT SECTION */}
+        {/* CONTACT SECTION */}
         <div className="mt-20 p-8 rounded-3xl bg-indigo-600/5 border border-indigo-500/10 text-center">
           <h3 className="text-xl font-semibold mb-2">Still have questions?</h3>
           <p className="text-slate-400 mb-6 text-sm">
             Can't find the answer you're looking for? Feel free to reach out.
           </p>
 
-          {/* ❌ BUTTON REMOVED */}
-
           <p className="mt-4 text-sm text-slate-500">
             Email me directly at{" "}
             <a
-              href="mailto:pandeyshikhar2004@gmail.com"
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=pandeyshikhar2004@gmail.com&su=Support Request"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-indigo-400 font-medium hover:underline"
             >
               pandeyshikhar2004@gmail.com
