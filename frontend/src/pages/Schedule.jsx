@@ -3,7 +3,7 @@ import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from '../api/axios';
-import Sidebar from '../components/Sidebar'; // ✅ ADDED
+import Sidebar from '../components/Sidebar'; // ✅ already added before
 
 const locales = {
   'en-US': require('date-fns/locale/en-US'),
@@ -65,7 +65,6 @@ const Schedule = () => {
     };
 
     setEvents(prev => [...prev, newEvent]);
-
     setShowModal(false);
     setTitle("");
   };
@@ -82,11 +81,10 @@ const Schedule = () => {
   return (
     <div className="flex min-h-screen bg-[#0d1117] text-white">
       
-      {/* ✅ SIDEBAR ADDED */}
+      {/* ✅ SIDEBAR */}
       <Sidebar />
 
-      {/* ✅ MAIN CONTENT (same tera code) */}
-      <div className="flex-1 ml-64 p-10">
+      <main className="flex-1 ml-64 p-10">
 
         {/* HEADER */}
         <div className="mb-8">
@@ -103,13 +101,13 @@ const Schedule = () => {
           <div className="h-full w-full bg-[#0b0f14]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-5">
 
             <Calendar
+              className="custom-calendar"   // ✅ IMPORTANT FIX
               selectable
               localizer={localizer}
               events={events}
               startAccessor="start"
               endAccessor="end"
               style={{ height: '100%' }}
-
               onSelectSlot={handleSelect}
               onSelectEvent={handleDelete}
 
@@ -137,12 +135,24 @@ const Schedule = () => {
           </div>
         </div>
 
+        {/* 🔥 LOCAL FIX (NO index.css change) */}
+        <style>
+          {`
+            .custom-calendar .rbc-off-range-bg {
+              background: #0b0f14 !important;
+            }
+
+            .custom-calendar .rbc-day-bg {
+              background: #0b0f14;
+            }
+          `}
+        </style>
+
         {/* MODAL */}
         {showModal && (
           <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-            
             <div className="bg-[#111318] border border-white/10 p-6 rounded-2xl w-[320px]">
-              
+
               <h2 className="text-white mb-4 text-lg font-semibold">
                 Add Event
               </h2>
@@ -174,7 +184,7 @@ const Schedule = () => {
           </div>
         )}
 
-      </div>
+      </main>
     </div>
   );
 };
