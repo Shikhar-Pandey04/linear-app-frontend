@@ -58,15 +58,6 @@ const FAQItem = ({ question, answer }) => {
 };
 
 const SupportPage = () => {
-
-  // ✅ FIXED MAIL FUNCTION
-  const handleContact = () => {
-    window.open(
-      "mailto:pandeyshikhar2004@gmail.com?subject=Support Request",
-      "_blank"
-    );
-  };
-
   return (
     <div className="min-h-screen bg-[#0b0e11] text-white p-8 pt-20">
       <div className="max-w-3xl mx-auto">
@@ -85,19 +76,20 @@ const SupportPage = () => {
           ))}
         </div>
 
-        {/* CONTACT SECTION */}
+        {/* ✅ CONTACT SECTION */}
         <div className="mt-20 p-8 rounded-3xl bg-indigo-600/5 border border-indigo-500/10 text-center">
           <h3 className="text-xl font-semibold mb-2">Still have questions?</h3>
           <p className="text-slate-400 mb-6 text-sm">
             Can't find the answer you're looking for? Feel free to reach out.
           </p>
 
-          <button
-            onClick={handleContact}
-            className="bg-indigo-600 hover:bg-indigo-700 px-8 py-3 rounded-xl font-bold transition-all"
+          {/* ✅ FINAL FIX */}
+          <a
+            href="mailto:pandeyshikhar2004@gmail.com?subject=Support Request"
+            className="bg-indigo-600 hover:bg-indigo-700 px-8 py-3 rounded-xl font-bold transition-all inline-block"
           >
             Get in touch
-          </button>
+          </a>
 
           <p className="mt-4 text-sm text-slate-500">
             or email me directly at{" "}
