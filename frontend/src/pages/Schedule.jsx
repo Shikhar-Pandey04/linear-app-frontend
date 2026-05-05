@@ -3,7 +3,7 @@ import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from '../api/axios';
-import Sidebar from '../components/Sidebar'; // ✅ already added before
+import Sidebar from '../components/Sidebar';
 
 const locales = {
   'en-US': require('date-fns/locale/en-US'),
@@ -19,7 +19,6 @@ const localizer = dateFnsLocalizer({
 
 const Schedule = () => {
   const [events, setEvents] = useState([]);
-
   const [showModal, setShowModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [title, setTitle] = useState("");
@@ -38,14 +37,33 @@ const Schedule = () => {
           priority: issue.priority?.toUpperCase(),
         }));
 
-      setEvents(mappedEvents);
+      return mappedEvents;
     } catch (err) {
       console.error('Schedule fetch error:', err);
+      return [];
     }
   };
 
+  // ✅ FIX: API + localStorage merge
   useEffect(() => {
-    fetchIssues();
+    const loadData = async () => {
+      const apiEvents = await fetchIssues();
+
+      const saved = localStorage.getItem("calendarEvents");
+      let localEvents = [];
+
+      if (saved) {
+        localEvents = JSON.parse(saved).map(e => ({
+          ...e,
+          start: new Date(e.start),
+          end: new Date(e.end),
+        }));
+      }
+
+      setEvents([...apiEvents, ...localEvents]);
+    };
+
+    loadData();
   }, []);
 
   const handleSelect = (slotInfo) => {
@@ -53,6 +71,7 @@ const Schedule = () => {
     setShowModal(true);
   };
 
+  // ✅ FIX: save to localStorage
   const handleSave = () => {
     if (!title.trim()) return;
 
@@ -64,29 +83,41 @@ const Schedule = () => {
       priority: "LOW",
     };
 
-    setEvents(prev => [...prev, newEvent]);
+    setEvents(prev => {
+      const updated = [...prev, newEvent];
+
+      const onlyCustom = updated.filter(e => typeof e.id === "number");
+      localStorage.setItem("calendarEvents", JSON.stringify(onlyCustom));
+
+      return updated;
+    });
+
     setShowModal(false);
     setTitle("");
   };
 
+  // ✅ FIX: delete persist
   const handleDelete = (eventToDelete) => {
     const confirmDelete = window.confirm("Delete this event?");
     if (!confirmDelete) return;
 
-    setEvents(prev =>
-      prev.filter(event => event.id !== eventToDelete.id)
-    );
+    setEvents(prev => {
+      const updated = prev.filter(e => e.id !== eventToDelete.id);
+
+      const onlyCustom = updated.filter(e => typeof e.id === "number");
+      localStorage.setItem("calendarEvents", JSON.stringify(onlyCustom));
+
+      return updated;
+    });
   };
 
   return (
     <div className="flex min-h-screen bg-[#0d1117] text-white">
       
-      {/* ✅ SIDEBAR */}
       <Sidebar />
 
       <main className="flex-1 ml-64 p-10">
 
-        {/* HEADER */}
         <div className="mb-8">
           <h1 className="text-5xl font-black tracking-tight">
             Schedule
@@ -96,12 +127,11 @@ const Schedule = () => {
           </p>
         </div>
 
-        {/* CALENDAR */}
         <div className="h-[85vh] rounded-2xl p-[1px] bg-gradient-to-br from-indigo-500/20 via-transparent to-purple-500/20">
           <div className="h-full w-full bg-[#0b0f14]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-5">
 
             <Calendar
-              className="custom-calendar"   // ✅ IMPORTANT FIX
+              className="custom-calendar"
               selectable
               localizer={localizer}
               events={events}
@@ -135,7 +165,6 @@ const Schedule = () => {
           </div>
         </div>
 
-        {/* 🔥 LOCAL FIX (NO index.css change) */}
         <style>
           {`
             .custom-calendar .rbc-off-range-bg {
@@ -148,7 +177,6 @@ const Schedule = () => {
           `}
         </style>
 
-        {/* MODAL */}
         {showModal && (
           <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
             <div className="bg-[#111318] border border-white/10 p-6 rounded-2xl w-[320px]">
