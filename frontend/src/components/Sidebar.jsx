@@ -61,8 +61,8 @@ const Sidebar = () => {
   return (
     <div className="w-64 h-screen bg-[#010409] border-r border-gray-800 flex flex-col p-6 fixed left-0 top-0">
 
-      {/* 🔥 SINGLE FLOW WITH EQUAL GAP */}
-      <div className="flex flex-col gap-7 h-full">
+      {/* 🔥 EVEN DISTRIBUTION */}
+      <div className="flex flex-col justify-evenly h-full">
 
         {/* LOGO */}
         <div className="flex items-center gap-3">
