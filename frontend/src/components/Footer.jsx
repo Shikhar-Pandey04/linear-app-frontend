@@ -50,7 +50,7 @@ const Footer = () => {
 
           {/* LEFT */}
           <p className="text-sm">
-            © 2025 Your Brand. All rights reserved.
+            © 2026 Your Brand. All rights reserved.
           </p>
 
           {/* RIGHT ICONS */}
