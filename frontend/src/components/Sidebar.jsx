@@ -61,107 +61,95 @@ const Sidebar = () => {
   return (
     <div className="w-64 h-screen bg-[#010409] border-r border-gray-800 flex flex-col p-6 fixed left-0 top-0">
 
-      {/* FULL HEIGHT DISTRIBUTION */}
-      <div className="flex flex-col justify-between h-full">
+      {/* 🔥 SINGLE FLOW WITH EQUAL GAP */}
+      <div className="flex flex-col gap-7 h-full">
 
-        {/* 🔥 TOP SECTION */}
-        <div className="flex flex-col gap-8">
-
-          {/* LOGO */}
-          <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-green-500 rounded-full" />
-            <span className="text-white font-bold text-2xl tracking-wide">
-              CoreTrack
-            </span>
-          </div>
-
-          {/* MAIN MENU */}
-          <div className="flex flex-col gap-8">
-
-            <p className="text-[12px] text-gray-400 uppercase tracking-widest font-semibold">
-              Main Menu
-            </p>
-
-            <NavItem
-              icon={Home}
-              label="Dashboard"
-              active={currentPath === '/dashboard'}
-              onClick={() => navigate('/dashboard')}
-            />
-
-            <NavItem
-              icon={CheckSquare}
-              label="My Tasks"
-              active={currentPath === '/my-tasks'}
-              onClick={() => navigate('/my-tasks')}
-            />
-
-            <NavItem
-              icon={Calendar}
-              label="Schedule"
-              active={currentPath === '/schedule'}
-              onClick={() => navigate('/schedule')}
-            />
-
-            <NavItem
-              icon={BarChart3}
-              label="Reports"
-              active={currentPath === '/reports'}
-              onClick={() => navigate('/reports')}
-            />
-
-          </div>
+        {/* LOGO */}
+        <div className="flex items-center gap-3">
+          <div className="w-3 h-3 bg-green-500 rounded-full" />
+          <span className="text-white font-bold text-3xl tracking-wide">
+            CoreTrack
+          </span>
         </div>
 
-        {/* 🔥 BOTTOM SECTION */}
-        <div className="flex flex-col gap-8">
+        {/* MAIN MENU */}
+        <p className="text-[12px] text-gray-400 uppercase tracking-widest font-semibold">
+          Main Menu
+        </p>
 
-          <div className="border-t border-gray-800" />
+        <NavItem
+          icon={Home}
+          label="Dashboard"
+          active={currentPath === '/dashboard'}
+          onClick={() => navigate('/dashboard')}
+        />
 
-          {/* PROFILE */}
-          <div
-            onClick={() => navigate('/settings')}
-            className="flex items-center gap-3 cursor-pointer"
-          >
-            <div className="w-9 h-9 rounded-md bg-[#161b22] flex items-center justify-center overflow-hidden">
-              {userData?.avatar ? (
-                <img src={userData.avatar} className="w-full h-full object-cover" />
-              ) : (
-                <User size={18} />
-              )}
-            </div>
+        <NavItem
+          icon={CheckSquare}
+          label="My Tasks"
+          active={currentPath === '/my-tasks'}
+          onClick={() => navigate('/my-tasks')}
+        />
 
-            <div className="flex-1">
-              <h4 className="text-white text-sm">
-                {userData?.fullName || 'Loading...'}
-              </h4>
-              <p className="text-gray-500 text-xs">Admin</p>
-            </div>
+        <NavItem
+          icon={Calendar}
+          label="Schedule"
+          active={currentPath === '/schedule'}
+          onClick={() => navigate('/schedule')}
+        />
 
-            <ChevronDown size={14} />
+        <NavItem
+          icon={BarChart3}
+          label="Reports"
+          active={currentPath === '/reports'}
+          onClick={() => navigate('/reports')}
+        />
+
+        {/* DIVIDER */}
+        <div className="border-t border-gray-800" />
+
+        {/* PROFILE */}
+        <div
+          onClick={() => navigate('/settings')}
+          className="flex items-center gap-3 cursor-pointer"
+        >
+          <div className="w-9 h-9 rounded-md bg-[#161b22] flex items-center justify-center overflow-hidden">
+            {userData?.avatar ? (
+              <img src={userData.avatar} className="w-full h-full object-cover" />
+            ) : (
+              <User size={18} />
+            )}
           </div>
 
-          <NavItem
-            icon={Settings}
-            label="Settings"
-            active={currentPath === '/settings'}
-            onClick={() => navigate('/settings')}
-          />
+          <div className="flex-1">
+            <h4 className="text-white text-sm">
+              {userData?.fullName || 'Loading...'}
+            </h4>
+            <p className="text-gray-500 text-xs">Admin</p>
+          </div>
 
-          <NavItem
-            icon={LifeBuoy}
-            label="Support"
-            active={currentPath === '/support'}
-            onClick={() => navigate('/support')}
-          />
-
-          <NavItem
-            icon={LogOut}
-            label="Logout"
-            onClick={handleLogout}
-          />
-
+          <ChevronDown size={14} />
         </div>
+
+        <NavItem
+          icon={Settings}
+          label="Settings"
+          active={currentPath === '/settings'}
+          onClick={() => navigate('/settings')}
+        />
+
+        <NavItem
+          icon={LifeBuoy}
+          label="Support"
+          active={currentPath === '/support'}
+          onClick={() => navigate('/support')}
+        />
+
+        <NavItem
+          icon={LogOut}
+          label="Logout"
+          onClick={handleLogout}
+        />
 
       </div>
     </div>
