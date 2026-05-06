@@ -6,9 +6,6 @@ import {
   CheckSquare,
   Calendar,
   BarChart3,
-  FolderOpen,
-  Users,
-  Briefcase,
   LifeBuoy,
   Settings,
   LogOut,
@@ -80,7 +77,6 @@ const Sidebar = () => {
       
       {/* TOP */}
       <div>
-        {/* Logo */}
         <div className="flex items-center gap-3 mb-10 px-2 mt-4">
           <div className="w-3 h-3 rounded-full bg-green-500"></div>
           <span className="text-lg font-semibold text-white">
@@ -88,7 +84,6 @@ const Sidebar = () => {
           </span>
         </div>
 
-        {/* Main Menu */}
         <div className="mb-8">
           <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest mb-4 px-2">
             Main Menu
@@ -101,7 +96,6 @@ const Sidebar = () => {
             onClick={() => navigate('/dashboard')}
           />
 
-          {/* ✅ FIX: badge removed */}
           <NavItem
             icon={CheckSquare}
             label="My Tasks"
@@ -123,23 +117,11 @@ const Sidebar = () => {
             onClick={() => navigate('/reports')}
           />
         </div>
-
-        {/* Records */}
-        <div className="mb-8">
-          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest mb-4 px-2">
-            Records
-          </p>
-
-          <NavItem icon={FolderOpen} label="Projects" />
-          <NavItem icon={Users} label="Team" />
-          <NavItem icon={Briefcase} label="Clients" />
-        </div>
       </div>
 
       {/* BOTTOM */}
       <div className="border-t border-gray-800 pt-6">
         
-        {/* Profile */}
         <div
           onClick={() => navigate('/settings')}
           className="flex items-center gap-3 p-3 mb-4 rounded-lg hover:bg-[#161b22] transition-all cursor-pointer"
@@ -169,7 +151,6 @@ const Sidebar = () => {
           <ChevronDown size={14} className="text-gray-500" />
         </div>
 
-        {/* Actions */}
         <div className="space-y-1">
           <NavItem
             icon={Settings}
