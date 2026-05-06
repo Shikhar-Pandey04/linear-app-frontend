@@ -14,28 +14,18 @@ import {
 } from 'lucide-react';
 import API from '../api/axios';
 
-const NavItem = ({ icon: Icon, label, badge, active = false, onClick }) => (
+const NavItem = ({ icon: Icon, label, active = false, onClick }) => (
   <motion.div
     whileHover={{ x: 3 }}
     onClick={onClick}
-    className={`flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer transition-all ${
+    className={`flex items-center gap-4 px-4 py-3 rounded-lg cursor-pointer transition-all ${
       active
         ? 'bg-[#161b22] text-white border border-gray-800'
         : 'text-gray-400 hover:text-white hover:bg-[#161b22]'
     }`}
   >
-    <div className="flex items-center gap-4">
-      <Icon size={18} strokeWidth={2} className="text-gray-400" />
-      <span className="text-[14px] font-medium tracking-wide">
-        {label}
-      </span>
-    </div>
-
-    {badge && (
-      <span className="bg-[#238636]/20 text-[#238636] text-[11px] font-semibold px-2 py-0.5 rounded-md border border-[#238636]/20">
-        {badge}
-      </span>
-    )}
+    <Icon size={18} />
+    <span className="text-[14px] font-medium">{label}</span>
   </motion.div>
 );
 
@@ -48,134 +38,119 @@ const Sidebar = () => {
 
   const fetchUser = async () => {
     try {
-      const response = await API.get('/users/current-user');
-      if (response.data.success) {
-        setUserData(response.data.data);
+      const res = await API.get('/users/current-user');
+      if (res.data.success) {
+        setUserData(res.data.data);
       }
-    } catch (error) {
-      console.error('Sidebar user fetch error:', error);
+    } catch (err) {
+      console.error(err);
     }
   };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
 
   useEffect(() => {
     fetchUser();
   }, [currentPath]);
 
   const handleLogout = () => {
-    if (window.confirm('Do you want to logout?')) {
+    if (window.confirm('Logout?')) {
       localStorage.removeItem('token');
       window.location.href = '/login';
     }
   };
 
   return (
-    <div className="w-64 h-screen bg-[#010409] border-r border-gray-800 flex flex-col justify-between p-5 fixed left-0 top-0 z-50">
-      
-      {/* TOP */}
-      <div>
-        <div className="flex items-center gap-3 mb-10 px-2 mt-4">
-          <div className="w-3 h-3 rounded-full bg-green-500"></div>
-          <span className="text-lg font-semibold text-white">
-            World
-          </span>
+    <div className="w-64 h-screen bg-[#010409] border-r border-gray-800 flex flex-col p-6 fixed left-0 top-0">
+
+      {/* ✅ SINGLE COLUMN WITH SAME GAP */}
+      <div className="flex flex-col gap-6 h-full">
+
+        {/* LOGO */}
+        <div className="flex items-center gap-3">
+          <div className="w-3 h-3 bg-green-500 rounded-full" />
+          <span className="text-white font-semibold text-lg">World</span>
         </div>
 
-        {/* ✅ EQUAL GAP FIX */}
-        <div className="flex flex-col gap-6 mt-6">
-          
-          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest px-2">
-            Main Menu
-          </p>
+        {/* TITLE */}
+        <p className="text-[11px] text-gray-500 uppercase tracking-widest">
+          Main Menu
+        </p>
 
-          <NavItem
-            icon={Home}
-            label="Dashboard"
-            active={currentPath === '/dashboard'}
-            onClick={() => navigate('/dashboard')}
-          />
+        {/* MENU ITEMS */}
+        <NavItem
+          icon={Home}
+          label="Dashboard"
+          active={currentPath === '/dashboard'}
+          onClick={() => navigate('/dashboard')}
+        />
 
-          <NavItem
-            icon={CheckSquare}
-            label="My Tasks"
-            active={currentPath === '/my-tasks'}
-            onClick={() => navigate('/my-tasks')}
-          />
+        <NavItem
+          icon={CheckSquare}
+          label="My Tasks"
+          active={currentPath === '/my-tasks'}
+          onClick={() => navigate('/my-tasks')}
+        />
 
-          <NavItem
-            icon={Calendar}
-            label="Schedule"
-            active={currentPath === '/schedule'}
-            onClick={() => navigate('/schedule')}
-          />
+        <NavItem
+          icon={Calendar}
+          label="Schedule"
+          active={currentPath === '/schedule'}
+          onClick={() => navigate('/schedule')}
+        />
 
-          <NavItem
-            icon={BarChart3}
-            label="Reports"
-            active={currentPath === '/reports'}
-            onClick={() => navigate('/reports')}
-          />
-        </div>
-      </div>
+        <NavItem
+          icon={BarChart3}
+          label="Reports"
+          active={currentPath === '/reports'}
+          onClick={() => navigate('/reports')}
+        />
 
-      {/* BOTTOM */}
-      <div className="border-t border-gray-800 pt-6">
-        
+        {/* DIVIDER */}
+        <div className="border-t border-gray-800" />
+
+        {/* PROFILE */}
         <div
           onClick={() => navigate('/settings')}
-          className="flex items-center gap-3 p-3 mb-4 rounded-lg hover:bg-[#161b22] transition-all cursor-pointer"
+          className="flex items-center gap-3 cursor-pointer"
         >
-          <div className="w-9 h-9 rounded-md overflow-hidden border border-gray-700 bg-[#161b22] flex items-center justify-center">
+          <div className="w-9 h-9 rounded-md bg-[#161b22] flex items-center justify-center overflow-hidden">
             {userData?.avatar ? (
-              <img
-                src={userData.avatar}
-                alt="User"
-                className="w-full h-full object-cover"
-              />
+              <img src={userData.avatar} className="w-full h-full object-cover" />
             ) : (
-              <User size={18} className="text-gray-500" />
+              <User size={18} />
             )}
           </div>
 
           <div className="flex-1">
-            <h4 className="text-[13px] font-medium text-white truncate">
+            <h4 className="text-white text-sm">
               {userData?.fullName || 'Loading...'}
             </h4>
-
-            <p className="text-[10px] text-gray-500 uppercase tracking-widest">
-              Admin
-            </p>
+            <p className="text-gray-500 text-xs">Admin</p>
           </div>
 
-          <ChevronDown size={14} className="text-gray-500" />
+          <ChevronDown size={14} />
         </div>
 
-        <div className="space-y-1">
-          <NavItem
-            icon={Settings}
-            label="Settings"
-            active={currentPath === '/settings'}
-            onClick={() => navigate('/settings')}
-          />
+        {/* SETTINGS */}
+        <NavItem
+          icon={Settings}
+          label="Settings"
+          active={currentPath === '/settings'}
+          onClick={() => navigate('/settings')}
+        />
 
-          <NavItem
-            icon={LifeBuoy}
-            label="Support"
-            active={currentPath === '/support'}
-            onClick={() => navigate('/support')}
-          />
+        <NavItem
+          icon={LifeBuoy}
+          label="Support"
+          active={currentPath === '/support'}
+          onClick={() => navigate('/support')}
+        />
 
-          <div className="mt-2 pt-2 border-t border-gray-800">
-            <NavItem
-              icon={LogOut}
-              label="Logout"
-              onClick={handleLogout}
-            />
-          </div>
-        </div>
+        <NavItem
+          icon={LogOut}
+          label="Logout"
+          onClick={handleLogout}
+        />
+
       </div>
     </div>
   );
