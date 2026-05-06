@@ -20,11 +20,9 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden relative font-sans flex flex-col">
 
-      {/* ✅ FIX 1: pointer-events-none add */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_35%)]" />
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_left,rgba(80,80,255,0.08),transparent_30%)]" />
 
-      {/* NAVBAR */}
       <nav className="max-w-[1400px] mx-auto px-8 py-6 relative z-20">
         <div className="flex items-center gap-2 cursor-pointer">
           <div className="w-5 h-5 bg-white rounded-md rotate-12 relative overflow-hidden">
@@ -34,7 +32,6 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      {/* MAIN CONTENT */}
       <div className="flex-grow relative z-10">
         <section className="max-w-[1400px] mx-auto px-8 pt-14">
 
@@ -62,13 +59,18 @@ const LandingPage = () => {
             Start building
           </button>
 
+          {/* ✅ FIXED SECTION */}
           <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            initial={{ opacity: 0, y: 60, rotate: -6 }}
+            animate={{ opacity: 1, y: 0, rotate: 0 }}
+            transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
             className="mt-8 pb-20 [perspective:2200px]"
           >
-            <div className="-rotate-6 rounded-3xl border border-white/10 overflow-hidden bg-[#090909] shadow-[0_80px_160px_rgba(0,0,0,0.95)]">
+            <motion.div
+              whileHover={{ rotate: -2, scale: 1.01 }}
+              transition={{ type: "spring", stiffness: 120 }}
+              className="rounded-3xl border border-white/10 overflow-hidden bg-[#090909] shadow-[0_80px_160px_rgba(0,0,0,0.95)]"
+            >
 
               <div className="grid grid-cols-[220px_1fr_1fr] min-h-[520px]">
 
@@ -125,13 +127,12 @@ const LandingPage = () => {
                 </div>
 
               </div>
-            </div>
+            </motion.div>
           </motion.div>
 
         </section>
       </div>
 
-      {/* ✅ FIX 2: Footer above everything */}
       <div className="relative z-50">
         <Footer />
       </div>
