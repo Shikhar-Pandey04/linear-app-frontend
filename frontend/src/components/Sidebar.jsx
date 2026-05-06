@@ -73,59 +73,60 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-64 h-screen bg-[#010409] border-r border-gray-800 flex flex-col p-5 fixed left-0 top-0 z-50">
+    <div className="w-64 h-screen bg-[#010409] border-r border-gray-800 flex flex-col justify-between p-5 fixed left-0 top-0 z-50">
+      
+      {/* TOP */}
+      <div>
+        <div className="flex items-center gap-3 mb-10 px-2 mt-4">
+          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+          <span className="text-lg font-semibold text-white">
+            World
+          </span>
+        </div>
 
-      {/* 🔹 LOGO (TOP) */}
-      <div className="flex items-center gap-3 px-2 mt-4">
-        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-        <span className="text-lg font-semibold text-white">
-          World
-        </span>
+        {/* ✅ EQUAL GAP FIX */}
+        <div className="flex flex-col gap-6 mt-6">
+          
+          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest px-2">
+            Main Menu
+          </p>
+
+          <NavItem
+            icon={Home}
+            label="Dashboard"
+            active={currentPath === '/dashboard'}
+            onClick={() => navigate('/dashboard')}
+          />
+
+          <NavItem
+            icon={CheckSquare}
+            label="My Tasks"
+            active={currentPath === '/my-tasks'}
+            onClick={() => navigate('/my-tasks')}
+          />
+
+          <NavItem
+            icon={Calendar}
+            label="Schedule"
+            active={currentPath === '/schedule'}
+            onClick={() => navigate('/schedule')}
+          />
+
+          <NavItem
+            icon={BarChart3}
+            label="Reports"
+            active={currentPath === '/reports'}
+            onClick={() => navigate('/reports')}
+          />
+        </div>
       </div>
 
-      {/* 🔹 MAIN MENU (CENTER PERFECT) */}
-      <div className="flex flex-col justify-center flex-1 space-y-4">
-
-        <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest px-2">
-          Main Menu
-        </p>
-
-        <NavItem
-          icon={Home}
-          label="Dashboard"
-          active={currentPath === '/dashboard'}
-          onClick={() => navigate('/dashboard')}
-        />
-
-        <NavItem
-          icon={CheckSquare}
-          label="My Tasks"
-          active={currentPath === '/my-tasks'}
-          onClick={() => navigate('/my-tasks')}
-        />
-
-        <NavItem
-          icon={Calendar}
-          label="Schedule"
-          active={currentPath === '/schedule'}
-          onClick={() => navigate('/schedule')}
-        />
-
-        <NavItem
-          icon={BarChart3}
-          label="Reports"
-          active={currentPath === '/reports'}
-          onClick={() => navigate('/reports')}
-        />
-      </div>
-
-      {/* 🔹 BOTTOM SECTION */}
-      <div className="flex flex-col space-y-4 border-t border-gray-800 pt-4">
-
-        {/* Profile */}
+      {/* BOTTOM */}
+      <div className="border-t border-gray-800 pt-6">
+        
         <div
           onClick={() => navigate('/settings')}
-          className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#161b22] transition-all cursor-pointer"
+          className="flex items-center gap-3 p-3 mb-4 rounded-lg hover:bg-[#161b22] transition-all cursor-pointer"
         >
           <div className="w-9 h-9 rounded-md overflow-hidden border border-gray-700 bg-[#161b22] flex items-center justify-center">
             {userData?.avatar ? (
@@ -152,29 +153,30 @@ const Sidebar = () => {
           <ChevronDown size={14} className="text-gray-500" />
         </div>
 
-        {/* Actions */}
-        <NavItem
-          icon={Settings}
-          label="Settings"
-          active={currentPath === '/settings'}
-          onClick={() => navigate('/settings')}
-        />
+        <div className="space-y-1">
+          <NavItem
+            icon={Settings}
+            label="Settings"
+            active={currentPath === '/settings'}
+            onClick={() => navigate('/settings')}
+          />
 
-        <NavItem
-          icon={LifeBuoy}
-          label="Support"
-          active={currentPath === '/support'}
-          onClick={() => navigate('/support')}
-        />
+          <NavItem
+            icon={LifeBuoy}
+            label="Support"
+            active={currentPath === '/support'}
+            onClick={() => navigate('/support')}
+          />
 
-        <NavItem
-          icon={LogOut}
-          label="Logout"
-          onClick={handleLogout}
-        />
-
+          <div className="mt-2 pt-2 border-t border-gray-800">
+            <NavItem
+              icon={LogOut}
+              label="Logout"
+              onClick={handleLogout}
+            />
+          </div>
+        </div>
       </div>
-
     </div>
   );
 };
