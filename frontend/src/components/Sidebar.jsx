@@ -61,21 +61,21 @@ const Sidebar = () => {
   return (
     <div className="w-64 h-screen bg-[#010409] border-r border-gray-800 flex flex-col p-6 fixed left-0 top-0">
 
-      {/* ✅ SINGLE COLUMN WITH SAME GAP */}
       <div className="flex flex-col gap-6 h-full">
 
-        {/* LOGO */}
+        {/* 🔥 UPDATED LOGO */}
         <div className="flex items-center gap-3">
           <div className="w-3 h-3 bg-green-500 rounded-full" />
-          <span className="text-white font-semibold text-lg">World</span>
+          <span className="text-white font-bold text-xl tracking-wide">
+            CoreTrack
+          </span>
         </div>
 
-        {/* TITLE */}
-        <p className="text-[11px] text-gray-500 uppercase tracking-widest">
+        {/* 🔥 UPDATED MAIN MENU */}
+        <p className="text-[12px] text-gray-400 uppercase tracking-widest font-semibold">
           Main Menu
         </p>
 
-        {/* MENU ITEMS */}
         <NavItem
           icon={Home}
           label="Dashboard"
@@ -104,10 +104,8 @@ const Sidebar = () => {
           onClick={() => navigate('/reports')}
         />
 
-        {/* DIVIDER */}
         <div className="border-t border-gray-800" />
 
-        {/* PROFILE */}
         <div
           onClick={() => navigate('/settings')}
           className="flex items-center gap-3 cursor-pointer"
@@ -130,7 +128,6 @@ const Sidebar = () => {
           <ChevronDown size={14} />
         </div>
 
-        {/* SETTINGS */}
         <NavItem
           icon={Settings}
           label="Settings"
