@@ -18,7 +18,7 @@ const NavItem = ({ icon: Icon, label, badge, active = false, onClick }) => (
   <motion.div
     whileHover={{ x: 3 }}
     onClick={onClick}
-    className={`flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer transition-all mb-0 ${
+    className={`flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer transition-all ${
       active
         ? 'bg-[#161b22] text-white border border-gray-800'
         : 'text-gray-400 hover:text-white hover:bg-[#161b22]'
@@ -76,7 +76,9 @@ const Sidebar = () => {
     <div className="w-64 h-screen bg-[#010409] border-r border-gray-800 flex flex-col justify-between p-5 fixed left-0 top-0 z-50">
       
       {/* TOP */}
-      <div>
+      <div className="flex flex-col h-full">
+        
+        {/* Logo */}
         <div className="flex items-center gap-3 mb-10 px-2 mt-4">
           <div className="w-3 h-3 rounded-full bg-green-500"></div>
           <span className="text-lg font-semibold text-white">
@@ -84,9 +86,10 @@ const Sidebar = () => {
           </span>
         </div>
 
-        {/* ✅ FIXED SPACING */}
-        <div className="mb-8 space-y-2">
-          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest mb-4 px-2">
+        {/* ✅ REAL EQUAL SPACING */}
+        <div className="flex flex-col justify-evenly flex-1">
+          
+          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest px-2">
             Main Menu
           </p>
 
@@ -118,6 +121,7 @@ const Sidebar = () => {
             onClick={() => navigate('/reports')}
           />
         </div>
+
       </div>
 
       {/* BOTTOM */}
