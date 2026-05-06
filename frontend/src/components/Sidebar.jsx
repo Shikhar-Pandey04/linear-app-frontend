@@ -18,7 +18,7 @@ const NavItem = ({ icon: Icon, label, badge, active = false, onClick }) => (
   <motion.div
     whileHover={{ x: 3 }}
     onClick={onClick}
-    className={`flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer transition-all mb-1 ${
+    className={`flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer transition-all mb-0 ${
       active
         ? 'bg-[#161b22] text-white border border-gray-800'
         : 'text-gray-400 hover:text-white hover:bg-[#161b22]'
@@ -84,7 +84,8 @@ const Sidebar = () => {
           </span>
         </div>
 
-        <div className="mb-8">
+        {/* ✅ FIXED SPACING */}
+        <div className="mb-8 space-y-2">
           <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest mb-4 px-2">
             Main Menu
           </p>
