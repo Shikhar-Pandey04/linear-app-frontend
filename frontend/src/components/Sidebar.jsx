@@ -20,16 +20,16 @@ const NavItem = ({ icon: Icon, label, active = false, onClick }) => (
     onClick={onClick}
     className={`group relative flex items-center gap-4 px-4 py-3 rounded-lg cursor-pointer transition-all duration-300 ${
       active
-        ? 'bg-[#161b22] text-white border border-gray-800 shadow-[0_0_12px_rgba(99,102,241,0.3)]'
+        ? 'bg-[#161b22] text-white border border-gray-800 shadow-[0_0_12px_rgba(168,85,247,0.3)]'
         : 'text-gray-400 hover:text-white hover:bg-[#161b22]'
     }`}
   >
-    {/* 🔥 Glow Effect */}
-    <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition duration-300 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-indigo-500/10 blur-md"></div>
+    {/* 🔥 PURPLE/PINK PREMIUM GLOW */}
+    <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition duration-300 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-fuchsia-500/10 blur-md"></div>
 
     <Icon
       size={18}
-      className="relative z-10 transition-all duration-300 group-hover:text-indigo-400"
+      className="relative z-10 transition-all duration-300 group-hover:text-purple-400"
     />
 
     <span className="relative z-10 text-[14px] font-medium">
