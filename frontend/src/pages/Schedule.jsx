@@ -44,12 +44,14 @@ const Schedule = () => {
     }
   };
 
-  // ✅ FIX: API + localStorage merge
+  // ✅ USER-WISE DATA LOAD
   useEffect(() => {
     const loadData = async () => {
       const apiEvents = await fetchIssues();
 
-      const saved = localStorage.getItem("calendarEvents");
+      const userId = localStorage.getItem("userId"); // 🔥 FIX
+
+      const saved = localStorage.getItem(`calendarEvents_${userId}`);
       let localEvents = [];
 
       if (saved) {
@@ -71,9 +73,11 @@ const Schedule = () => {
     setShowModal(true);
   };
 
-  // ✅ FIX: save to localStorage
+  // ✅ SAVE (USER-WISE)
   const handleSave = () => {
     if (!title.trim()) return;
+
+    const userId = localStorage.getItem("userId"); // 🔥 FIX
 
     const newEvent = {
       id: Date.now(),
@@ -87,7 +91,11 @@ const Schedule = () => {
       const updated = [...prev, newEvent];
 
       const onlyCustom = updated.filter(e => typeof e.id === "number");
-      localStorage.setItem("calendarEvents", JSON.stringify(onlyCustom));
+
+      localStorage.setItem(
+        `calendarEvents_${userId}`, // 🔥 FIX
+        JSON.stringify(onlyCustom)
+      );
 
       return updated;
     });
@@ -96,16 +104,22 @@ const Schedule = () => {
     setTitle("");
   };
 
-  // ✅ FIX: delete persist
+  // ✅ DELETE (USER-WISE)
   const handleDelete = (eventToDelete) => {
     const confirmDelete = window.confirm("Delete this event?");
     if (!confirmDelete) return;
+
+    const userId = localStorage.getItem("userId"); // 🔥 FIX
 
     setEvents(prev => {
       const updated = prev.filter(e => e.id !== eventToDelete.id);
 
       const onlyCustom = updated.filter(e => typeof e.id === "number");
-      localStorage.setItem("calendarEvents", JSON.stringify(onlyCustom));
+
+      localStorage.setItem(
+        `calendarEvents_${userId}`, // 🔥 FIX
+        JSON.stringify(onlyCustom)
+      );
 
       return updated;
     });
